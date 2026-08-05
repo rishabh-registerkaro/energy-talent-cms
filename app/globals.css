@@ -24,10 +24,13 @@
   --et-orange-soft: #fdf0e6;
   --et-amber: #f0a02a;
 
-  /* Neutrals */
-  --et-ink: #101820;      /* headings */
-  --et-ink-2: #3d454d;    /* body copy */
-  --et-muted: #6e767e;    /* secondary / helper text */
+  /* Neutrals. Text sits on white, so it is pure black — anything lighter
+     washed out badly on the real screens. Only genuinely secondary copy
+     (helper lines, timestamps) uses --et-muted, and even that is kept dark
+     enough to clear WCAG AA on white. */
+  --et-ink: #000000;      /* headings and body text */
+  --et-ink-2: #1a1a1a;    /* slightly recessed body copy */
+  --et-muted: #52585f;    /* secondary / helper text */
   --et-border: #e3e5e8;   /* the single hairline border used everywhere */
   --et-surface: #ffffff;  /* cards, panels, sidebar */
   --et-canvas: #f6f7f8;   /* page background */
@@ -51,12 +54,12 @@
   /* ── slate → inverted light ramp ───────────────────────────────────
      Dark surfaces become light ones; light text becomes dark text.
      900 = canvas, 800 = card surface, 700 = input/secondary button. */
-  --color-slate-50: #0e1116;
-  --color-slate-100: #151b21;
-  --color-slate-200: #232a31;
-  --color-slate-300: #3d454d;
-  --color-slate-400: #6e767e;
-  --color-slate-500: #99a0a7;
+  --color-slate-50: #000000;
+  --color-slate-100: #000000;
+  --color-slate-200: #000000;
+  --color-slate-300: #111111;
+  --color-slate-400: #52585f;
+  --color-slate-500: #6b7280;
   --color-slate-600: #e3e5e8;
   --color-slate-700: #f1f3f5;
   --color-slate-800: #ffffff;
@@ -65,8 +68,8 @@
 
   /* gray/zinc are used the same dark-first way in a few files */
   --color-gray-200: #e3e5e8;
-  --color-gray-300: #3d454d;
-  --color-gray-400: #6e767e;
+  --color-gray-300: #111111;
+  --color-gray-400: #52585f;
   --color-gray-600: #e3e5e8;
   --color-gray-700: #f1f3f5;
   --color-gray-800: #ffffff;
@@ -78,7 +81,9 @@
      buttons, active nav items, focus rings and links in one move. */
   --color-indigo-50: #fdf0e6;
   --color-indigo-100: #fbe1cd;
-  --color-indigo-200: #f6c39b;
+  /* -200 is only ever used as badge text here, never as a fill, so it is
+     dark rather than a tint. */
+  --color-indigo-200: #7a3107;
   --color-indigo-300: #f08a3e;
   --color-indigo-400: #e8620e;
   --color-indigo-500: #e8620e;
@@ -92,7 +97,12 @@
   --color-blue-500: #e8620e;
   --color-blue-600: #d2560b;
 
-  --color-purple-400: #f0a02a;
+  /* purple is only used for the "superadmin" badge. The -200/-300/-400 shades
+     are its text colour, so they must be dark enough to read on the -500/20
+     tint used as the fill. */
+  --color-purple-200: #78350f;
+  --color-purple-300: #92400e;
+  --color-purple-400: #b45309;
   --color-purple-500: #e8930f;
   --color-purple-600: #c9530b;
   --color-violet-500: #e8930f;
@@ -183,7 +193,10 @@
   --sidebar-foreground: var(--et-ink);
   --sidebar-primary: var(--et-orange);
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: var(--et-canvas);
+  /* Hover on a white sidebar needs a stronger tint than the page canvas or
+     it reads as "nothing happened". Grey fill + orange text on hover, and
+     the orange-soft --accent for the active item. */
+  --sidebar-accent: var(--et-canvas-2);
   --sidebar-accent-foreground: var(--et-orange-strong);
   --sidebar-border: var(--et-border);
   --sidebar-ring: var(--et-orange);
@@ -259,6 +272,30 @@
   color: #ffffff;
 }
 
+/* Genuinely black surfaces stay dark in a light theme — the hover "copy URL"
+   chip on media thumbnails, image overlays.
+   DIRECT children only, deliberately: `bg-black/80` is also used for modal
+   scrims, and those wrap light panels whose own text must stay dark. A
+   descendant selector here turned the editor's link-modal input white-on-
+   white. */
+:root [class*="bg-black"] > .text-white,
+:root [class*="bg-black"].text-white {
+  color: #ffffff;
+}
+
+/* A disabled button keeps its enabled background class in the class list, so
+   the "white text on a coloured button" exception above still matched, while
+   `disabled:bg-slate-600` (13 uses) swapped the actual fill to light grey —
+   white on grey. Disabled controls get muted ink whatever their base colour.
+   Specificity is (0,3,1) via the [class] attribute, one above the exception
+   rules, so no !important is needed. */
+:root button:disabled[class],
+:root button[disabled][class],
+:root [role="button"][aria-disabled="true"][class] {
+  color: var(--et-muted);
+  -webkit-text-fill-color: var(--et-muted);
+}
+
 /* Glassmorphism panels: translucent white over a dark page. On a light
    canvas they read as invisible, so they become solid hairline cards.
    Escaped exact selectors only — `hover:bg-white/10` must stay a hover. */
@@ -295,11 +332,29 @@
   backdrop-filter: none;
 }
 
-/* Shadows tuned for a dark page are far too heavy on white. */
-:root .shadow-xl,
-:root .shadow-2xl,
+/* Shadows tuned for a dark page are too heavy on white, but flattening them
+   entirely left modals with no separation from the page. Real light-theme
+   elevation instead. */
+:root .shadow-sm {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+}
+
 :root .shadow-lg {
-  box-shadow: 0 1px 2px rgb(16 24 32 / 4%);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 4%),
+    0 4px 12px rgb(0 0 0 / 6%);
+}
+
+:root .shadow-xl {
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 4%),
+    0 8px 24px rgb(0 0 0 / 8%);
+}
+
+:root .shadow-2xl {
+  box-shadow:
+    0 4px 8px rgb(0 0 0 / 6%),
+    0 16px 48px rgb(0 0 0 / 14%);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -333,14 +388,49 @@
   @apply p-4 overflow-x-auto;
 }
 
-/* Text selection — orange to match the brand accent. */
+/* ═══════════════════════════════════════════════════════════════════════
+   Text selection
+   22 inputs carry `selection:bg-indigo-500 selection:text-white`, written for
+   dark panels. On light inputs — especially the disabled ones that also carry
+   `opacity-60`, which fades the selection background along with everything
+   else — white text on a washed-out orange fill was invisible. Black text on
+   a light orange tint stays readable at any opacity.
+   ═══════════════════════════════════════════════════════════════════════ */
 ::selection {
-  background-color: var(--et-orange);
-  color: #ffffff;
+  background-color: #ffd9bf;
+  color: #000000;
 }
 
 input::selection,
 textarea::selection {
-  background-color: var(--et-orange);
-  color: #ffffff;
+  background-color: #ffd9bf;
+  color: #000000;
+}
+
+/* Tailwind emits the `selection:` variant as both a self and a descendant
+   selector, so both forms have to be overridden. */
+:root .selection\:text-white::selection,
+:root .selection\:text-white *::selection {
+  color: #000000;
+}
+
+:root .selection\:bg-indigo-500::selection,
+:root .selection\:bg-indigo-500 *::selection {
+  background-color: #ffd9bf;
+}
+
+/* Disabled fields were dimmed with opacity-60, which fades the text toward
+   the background. Grey the control instead of making its value unreadable.
+   `-webkit-text-fill-color` is the important one: WebKit/Blink apply their own
+   fill colour to disabled inputs and it outranks `color`, so setting `color`
+   alone leaves the value grey — which is exactly what happened on Profile. */
+:root input:disabled,
+:root textarea:disabled,
+:root select:disabled,
+:root input[readonly],
+:root textarea[readonly] {
+  opacity: 1;
+  color: var(--et-ink);
+  -webkit-text-fill-color: var(--et-ink);
+  background-color: var(--et-canvas-2);
 }

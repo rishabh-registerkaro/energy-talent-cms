@@ -22,6 +22,7 @@ import {
   Contact,
   ScrollText,
   Package,
+  BriefcaseBusiness,
 } from "lucide-react";
 import {
   Sidebar,
@@ -117,6 +118,24 @@ const navigationItems = [
           {
             title: "Add New Block",
             url: "/dashboard/packages/create-package",
+            icon: Plus,
+          },
+        ],
+      },
+      {
+        title: "Careers",
+        url: "/dashboard/careers",
+        icon: BriefcaseBusiness,
+        hasSubmenu: true,
+        submenuItems: [
+          {
+            title: "All Roles",
+            url: "/dashboard/careers",
+            icon: FileText,
+          },
+          {
+            title: "Add New Role",
+            url: "/dashboard/careers/create-career",
             icon: Plus,
           },
         ],
@@ -325,18 +344,18 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-slate-800">
-      <SidebarHeader className="border-b border-slate-800 p-4">
+    <Sidebar collapsible="icon" className="border-r border-border">
+      <SidebarHeader className="border-b border-border p-4">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
+          <div className="flex h-8 w-8 items-center justify-center bg-primary text-primary-foreground">
             <LayoutDashboard className="h-4 w-4" />
           </div>
           {state === "expanded" && (
             <div className="flex flex-col">
-              <span className="text-sm font-semibold text-white">
+              <span className="text-sm font-semibold text-foreground">
                 Energy Talent
               </span>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-muted-foreground">
                 Content Management System
               </span>
             </div>
@@ -349,7 +368,7 @@ export function AppSidebar() {
           (group) => (
             <SidebarGroup key={group.title}>
               {state === "expanded" && (
-                <SidebarGroupLabel className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-2 mb-2">
+                <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-2">
                   {group.title}
                 </SidebarGroupLabel>
               )}
@@ -384,7 +403,7 @@ export function AppSidebar() {
                             <SidebarMenuButton
                               asChild
                               isActive={false}
-                              className="w-full text-white hover:bg-slate-800/50 hover:text-white"
+                              className="w-full text-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                             >
                               <div
                                 onClick={() => toggleSubmenu(submenuKey)}
@@ -398,14 +417,16 @@ export function AppSidebar() {
                                   }
                                 }}
                               >
-                                <Icon className="h-4 w-4 text-white" />
+                                {/* Icons inherit colour from the button so they
+                                    follow its idle / hover / active state. */}
+                                <Icon className="h-4 w-4" />
                                 <span className="flex-1 text-left">
                                   {item.title}
                                 </span>
                                 {isSubmenuOpen ? (
-                                  <ChevronDown className="h-4 w-4 text-white" />
+                                  <ChevronDown className="h-4 w-4" />
                                 ) : (
-                                  <ChevronRight className="h-4 w-4 text-white" />
+                                  <ChevronRight className="h-4 w-4" />
                                 )}
                               </div>
                             </SidebarMenuButton>
@@ -422,21 +443,15 @@ export function AppSidebar() {
                                         isActive={subActive}
                                         className={
                                           subActive
-                                            ? "bg-indigo-600/20 text-indigo-400 border-l-2 border-indigo-500"
-                                            : "text-white hover:bg-slate-800/50 hover:text-white"
+                                            ? "bg-accent text-accent-foreground font-medium border-l-2 border-primary"
+                                            : "text-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                                         }
                                       >
                                         <Link
                                           href={subItem.url}
                                           className="flex items-center gap-2"
                                         >
-                                          <SubIcon
-                                            className={`h-3.5 w-3.5 ${
-                                              subActive
-                                                ? "text-black"
-                                                : "!text-white"
-                                            }`}
-                                          />
+                                          <SubIcon className="h-3.5 w-3.5" />
                                           <span>{subItem.title}</span>
                                         </Link>
                                       </SidebarMenuSubButton>
@@ -458,19 +473,15 @@ export function AppSidebar() {
                           isActive={active}
                           className={`w-full ${
                             active
-                              ? "bg-indigo-600/20 text-indigo-400 border-l-2 border-indigo-500"
-                              : "text-white hover:bg-slate-800/50 hover:text-white"
+                              ? "bg-accent text-accent-foreground font-medium border-l-2 border-primary"
+                              : "text-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                           }`}
                         >
                           <Link
                             href={item.url}
                             className="flex items-center gap-3"
                           >
-                            <Icon
-                              className={`h-4 w-4 ${
-                                active ? "text-black" : "text-white"
-                              }`}
-                            />
+                            <Icon className="h-4 w-4" />
                             {state === "expanded" && <span>{item.title}</span>}
                           </Link>
                         </SidebarMenuButton>
@@ -484,16 +495,16 @@ export function AppSidebar() {
         )}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-slate-800 p-2">
+      <SidebarFooter className="border-t border-border p-2">
         {state === "expanded" ? (
           <div className="w-full">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex w-full items-center gap-3 rounded-lg p-2 text-left hover:bg-slate-800/50 transition-colors">
+                <button className="flex w-full items-center gap-3 rounded-lg p-2 text-left hover:bg-sidebar-accent transition-colors">
                   <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-indigo-600 text-white text-xs">
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                       {loading ? (
-                        <div className="h-full w-full bg-slate-700/50 rounded-full animate-pulse" />
+                        <div className="h-full w-full bg-muted rounded-full animate-pulse" />
                       ) : (
                         getInitials(userData?.username, userData?.email)
                       )}
@@ -501,30 +512,30 @@ export function AppSidebar() {
                   </Avatar>
                   <div className="flex flex-1 flex-col overflow-hidden gap-1">
                     {loading ? (
-                      <div className="h-4 w-24 bg-slate-700 rounded animate-pulse" />
+                      <div className="h-4 w-24 bg-muted animate-pulse" />
                     ) : (
-                      <span className="text-sm font-medium text-white truncate">
+                      <span className="text-sm font-medium text-foreground truncate">
                         {userData?.username || "User"}
                       </span>
                     )}
                     {loading ? (
-                      <div className="h-3 w-32 bg-slate-700 rounded animate-pulse" />
+                      <div className="h-3 w-32 bg-muted animate-pulse" />
                     ) : (
-                      <span className="text-xs text-slate-400 truncate">
+                      <span className="text-xs text-muted-foreground truncate">
                         {userData?.email || ""}
                       </span>
                     )}
                   </div>
-                  <ChevronRight className="h-4 w-4 text-slate-400" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="w-56 bg-slate-900 border-slate-800 text-white"
+                className="w-56 bg-popover border-border text-foreground"
               >
                 <DropdownMenuItem
                   onClick={handleLogout}
-                  className="text-red-400 hover:bg-transparent hover:text-red-300 cursor-pointer"
+                  className="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   Logout
@@ -535,9 +546,9 @@ export function AppSidebar() {
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-800/50 transition-colors">
+              <button className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-sidebar-accent transition-colors">
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback className="bg-indigo-600 text-white text-xs">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                     {loading
                       ? "..."
                       : getInitials(userData?.username, userData?.email)}
@@ -548,33 +559,33 @@ export function AppSidebar() {
             <DropdownMenuContent
               side="right"
               align="end"
-              className="w-56 bg-slate-900 border-slate-800 text-white"
+              className="w-56 bg-popover border-border text-foreground"
             >
-              <DropdownMenuLabel className="text-slate-400">
+              <DropdownMenuLabel className="text-foreground">
                 {loading ? "Loading..." : userData?.username || "User"}
               </DropdownMenuLabel>
-              <DropdownMenuLabel className="text-xs text-slate-500 font-normal">
+              <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
                 {loading ? "" : userData?.email || ""}
               </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-slate-800" />
+              <DropdownMenuSeparator className="bg-border" />
               <DropdownMenuItem
                 onClick={() => router.push("/dashboard/profile")}
-                className="text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer"
+                className="text-foreground hover:bg-accent hover:text-accent-foreground cursor-pointer"
               >
                 <CircleUserRound className="mr-2 h-4 w-4" />
                 Profile
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => router.push("/dashboard/settings")}
-                className="text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer"
+                className="text-foreground hover:bg-accent hover:text-accent-foreground cursor-pointer"
               >
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-slate-800" />
+              <DropdownMenuSeparator className="bg-border" />
               <DropdownMenuItem
                 onClick={handleLogout}
-                className="text-red-400 hover:bg-red-500/10 hover:text-red-300 cursor-pointer"
+                className="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer"
               >
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout

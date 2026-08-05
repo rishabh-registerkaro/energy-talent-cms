@@ -72,7 +72,9 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Start writing...' }: Ed
     content: content || '',
     editorProps: {
       attributes: {
-        class: 'tiptap-editor prose prose-invert max-w-none focus:outline-none p-4',
+        // prose-invert was for the old dark editor surface; on a white sheet
+        // it inverts the typography colours back to unreadable.
+        class: 'tiptap-editor prose max-w-none focus:outline-none p-6',
         placeholder: placeholder,
       },
       // Pasting a bare image URL inserts the image itself instead of a link
@@ -289,7 +291,7 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Start writing...' }: Ed
 
   return (
     <div className="max-w-6xl mx-auto p-4 relative">
-      <div className="rounded-xl overflow-hidden border border-gray-800 shadow-xl bg-black">
+      <div className="overflow-hidden border border-border shadow-xl bg-white">
         {/* Toolbar */}
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-2 flex items-center justify-center gap-2 flex-wrap border-b border-gray-700">
           {/* Heading Buttons — NOW FIXED: Turn off when not in heading */}
@@ -415,7 +417,7 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Start writing...' }: Ed
 
         {/* Editor */}
         <div className="relative">
-          <EditorContent editor={editor} className="bg-black min-h-[400px] max-h-[600px] overflow-y-auto" />
+          <EditorContent editor={editor} className="bg-white min-h-[400px] max-h-[600px] overflow-y-auto" />
           
           {/* Link Input Modal - Overlay */}
           {showLinkInput && (
@@ -580,80 +582,80 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Start writing...' }: Ed
       {/* <style jsx global>{`
         .tiptap-editor {
           font-size: 1rem;
-          color: white;
+          color: var(--et-ink);
           max-width: 800px;
           margin: 0 auto;
         }
         .tiptap-editor h1 {
           font-size: 1.5rem;
           font-weight: 700;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor h2 {
           font-size: 1.25rem;
           font-weight: 700;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor h3 {
           font-size: 1.125rem;
           font-weight: 700;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor p {
           font-size: 1rem;
           font-weight: 400;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor strong {
-          color: white;
+          color: var(--et-ink);
           font-weight: 700;
         }
         .tiptap-editor em {
-          color: white;
+          color: var(--et-ink);
           font-style: italic;
         }
         .tiptap-editor u {
           text-decoration: underline;
-          color: white;
+          color: var(--et-ink);
         }
         .tiptap-editor ul {
           list-style: disc;
           padding-left: 2rem;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor ol {
           list-style: decimal;
           padding-left: 2rem;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor li {
           margin: 0.5rem 0;
-          color: white;
+          color: var(--et-ink);
         }
         .tiptap-editor blockquote {
-          border-left: 4px solid #6366f1;
+          border-left: 4px solid var(--et-orange);
           padding-left: 1.5rem;
           font-style: italic;
-          color: white;
+          color: var(--et-ink);
           margin: 1.5rem 0;
         }
         .tiptap-editor pre {
-          background: #1e1b4b;
+          background: var(--et-canvas-2);
           padding: 15px 10px;
           margin: 10px 0;
           border-radius: 12px;
-          border: 1px solid #4c1d95;
+          border: 1px solid var(--et-border);
           overflow-x: auto;
-          color: white;
+          color: var(--et-ink);
         }
         .tiptap-editor code {
-          color: white;
+          color: var(--et-ink);
           font-size: 0.875rem;
           background: none;
           padding: 5px 10px;
@@ -663,16 +665,16 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Start writing...' }: Ed
           width: 100%;
           border-collapse: collapse;
           margin: 2rem 0;
-          color: white;
+          color: var(--et-ink);
         }
         .tiptap-editor th, .tiptap-editor td {
-          border: 1px solid #6366f1;
+          border: 1px solid var(--et-border);
           padding: 1rem;
-          color: white;
+          color: var(--et-ink);
         }
         .tiptap-editor th {
-          background: #312e81;
-          color: white;
+          background: var(--et-canvas);
+          color: var(--et-ink);
         }
         .tiptap-editor img {
           max-width: 100%;
@@ -682,14 +684,14 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Start writing...' }: Ed
         }
         .tiptap-editor a,
         .tiptap-editor .editor-link {
-          color: #a855f7;
+          color: var(--et-orange-strong);
           text-decoration: underline;
           cursor: pointer;
           transition: color 0.2s;
         }
         .tiptap-editor a:hover,
         .tiptap-editor .editor-link:hover {
-          color: #c084fc;
+          color: var(--et-orange);
         }
       `}</style> */}
 
@@ -697,77 +699,77 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Start writing...' }: Ed
        <style jsx global>{`
         .tiptap-editor {
           font-size: 1rem;
-          color: white;
+          color: var(--et-ink);
           max-width: 800px;
           margin: 0 auto;
         }
         .tiptap-editor h1 {
           font-size: 1.5rem;
           font-weight: 700;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor h2 {
           font-size: 1.25rem;
           font-weight: 700;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor h3 {
           font-size: 1.125rem;
           font-weight: 700;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor p {
           font-size: 1rem;
           font-weight: 400;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor strong {
-          color: white;
+          color: var(--et-ink);
           font-weight: 700;
         }
         .tiptap-editor em {
-          color: white;
+          color: var(--et-ink);
           font-style: italic;
         }
         .tiptap-editor u {
           text-decoration: underline;
-          color: white;
+          color: var(--et-ink);
         }
         .tiptap-editor ul {
           list-style: disc;
           padding-left: 2rem;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor ol {
           list-style: decimal;
           padding-left: 2rem;
-          color: white;
+          color: var(--et-ink);
           margin: 1rem auto;
         }
         .tiptap-editor li {
           margin: 0.5rem 0;
-          color: white;
+          color: var(--et-ink);
         }
         .tiptap-editor blockquote {
-          border-left: 4px solid #6366f1;
+          border-left: 4px solid var(--et-orange);
           padding-left: 1.5rem;
           font-style: italic;
-          color: white;
+          color: var(--et-ink);
           margin: 1.5rem 0;
         }
         
         /* Code Block Styling (pre) */
         .tiptap-editor pre {
-          background: #1e1b4b;
+          background: var(--et-canvas-2);
           padding: 1.25rem 1rem;
           margin: 1.5rem 0;
           border-radius: 12px;
-          border: 1px solid #4c1d95;
+          border: 1px solid var(--et-border);
           overflow-x: auto;
           color: #e0e7ff;
           font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
@@ -817,7 +819,7 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Start writing...' }: Ed
         /* Code block with syntax highlighting support */
         .tiptap-editor pre[class*="language-"],
         .tiptap-editor pre[data-language] {
-          background: #1e1b4b;
+          background: var(--et-canvas-2);
         }
         
         /* Syntax highlighting tokens (if using lowlight) */
@@ -887,16 +889,16 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Start writing...' }: Ed
           width: 100%;
           border-collapse: collapse;
           margin: 2rem 0;
-          color: white;
+          color: var(--et-ink);
         }
         .tiptap-editor th, .tiptap-editor td {
-          border: 1px solid #6366f1;
+          border: 1px solid var(--et-border);
           padding: 1rem;
-          color: white;
+          color: var(--et-ink);
         }
         .tiptap-editor th {
-          background: #312e81;
-          color: white;
+          background: var(--et-canvas);
+          color: var(--et-ink);
         }
         .tiptap-editor img {
           max-width: 100%;
@@ -906,14 +908,14 @@ const Tiptap = ({ content = '', onChange, placeholder = 'Start writing...' }: Ed
         }
         .tiptap-editor a,
         .tiptap-editor .editor-link {
-          color: #a855f7;
+          color: var(--et-orange-strong);
           text-decoration: underline;
           cursor: pointer;
           transition: color 0.2s;
         }
         .tiptap-editor a:hover,
         .tiptap-editor .editor-link:hover {
-          color: #c084fc;
+          color: var(--et-orange);
         }
       `}</style>
     </div>

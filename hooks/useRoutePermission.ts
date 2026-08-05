@@ -16,6 +16,11 @@ const ROUTE_PERMISSIONS: Record<string, string[]> = {
   "/dashboard/packages": ADMIN_ROLES,
   "/dashboard/packages/create-package": ADMIN_ROLES,
   "/dashboard/packages/update-package": ADMIN_ROLES,
+  // Contributors can browse roles; only editors and up can create or edit them,
+  // matching the EDITOR_ROLES guard on the careers API.
+  "/dashboard/careers": ["superadmin", "admin", "editor", "contributor"],
+  "/dashboard/careers/create-career": ["superadmin", "admin", "editor"],
+  "/dashboard/careers/update-career": ["superadmin", "admin", "editor"],
   "/dashboard/blog": ["superadmin", "admin", "editor", "contributor"],
   "/dashboard/blog/create-blog": ["superadmin", "admin", "editor"],
   "/dashboard/blog/update-blog": ["superadmin", "admin", "editor"],

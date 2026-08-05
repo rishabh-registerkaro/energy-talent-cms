@@ -21,16 +21,28 @@ function sanitizeFilename(name: string): string {
   return name.replace(/[^a-zA-Z0-9._-]/g, "_");
 }
 
+// basic-ftp wants a bare host/IP — strip any ftp:// scheme, path or trailing slash
+// that crept in from a copy-pasted connection string, otherwise DNS gets asked to
+// resolve the whole URL and fails with ENOTFOUND.
+function ftpHost(): string {
+  const raw = (process.env.HOSTINGER_FTP_HOST || "").trim();
+  return raw.replace(/^[a-z][a-z0-9+.-]*:\/\//i, "").replace(/[/:].*$/, "");
+}
+
+async function connectFtp(client: ftp.Client): Promise<void> {
+  await client.access({
+    host: ftpHost(),
+    user: process.env.HOSTINGER_FTP_USER!,
+    password: process.env.HOSTINGER_FTP_PASS!,
+    port: Number(process.env.HOSTINGER_FTP_PORT) || 21,
+    secure: false,
+  });
+}
+
 async function uploadToHostinger(buffer: Buffer, filename: string): Promise<string> {
   const client = new ftp.Client();
   try {
-    await client.access({
-      host: process.env.HOSTINGER_FTP_HOST!,
-      user: process.env.HOSTINGER_FTP_USER!,
-      password: process.env.HOSTINGER_FTP_PASS!,
-      port: Number(process.env.HOSTINGER_FTP_PORT) || 21,
-      secure: false,
-    });
+    await connectFtp(client);
     await client.ensureDir(process.env.HOSTINGER_MEDIA_PATH || "/public_html/media");
     await client.uploadFrom(Readable.from(buffer), filename);
     const baseUrl = (process.env.HOSTINGER_MEDIA_URL || "").replace(/\/$/, "");
@@ -43,13 +55,7 @@ async function uploadToHostinger(buffer: Buffer, filename: string): Promise<stri
 async function deleteFromHostinger(filename: string): Promise<void> {
   const client = new ftp.Client();
   try {
-    await client.access({
-      host: process.env.HOSTINGER_FTP_HOST!,
-      user: process.env.HOSTINGER_FTP_USER!,
-      password: process.env.HOSTINGER_FTP_PASS!,
-      port: Number(process.env.HOSTINGER_FTP_PORT) || 21,
-      secure: false,
-    });
+    await connectFtp(client);
     const remotePath = `${process.env.HOSTINGER_MEDIA_PATH || "/public_html/media"}/${filename}`;
     await client.remove(remotePath);
   } finally {

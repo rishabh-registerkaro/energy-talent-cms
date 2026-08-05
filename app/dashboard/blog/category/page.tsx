@@ -13,7 +13,6 @@ import { createCategory, deleteCategory } from "@/lib/apiCallingCategory";
 
 const toastConfig = {
   closeButton: true,
-  className: "!bg-transparent !text-white",
 }
 
 // Matches the palette in the Category model

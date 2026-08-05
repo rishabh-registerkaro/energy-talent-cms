@@ -170,14 +170,12 @@ export default function ForgotPasswordPage() {
         toast.success("OTP sent to your email", {
           description: "Please check your inbox for the 6-digit code",
           duration: 5000,
-          className: "!bg-transparent !text-white",
         });
         setStep("otp");
         startResendTimer();
       } else {
         toast.error(response.message || "Failed to send OTP", {
           duration: 4000,
-          className: "!bg-transparent !text-white",
         });
       }
     } catch (error: any) {
@@ -188,7 +186,6 @@ export default function ForgotPasswordPage() {
       console.error("Request OTP error:", error);
       toast.error("Something went wrong. Please try again.", {
         duration: 4000,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       if (!signal.aborted && isMountedRef.current) {
@@ -219,13 +216,11 @@ export default function ForgotPasswordPage() {
         toast.success("OTP verified successfully", {
           description: "You can now set your new password",
           duration: 3000,
-          className: "!bg-transparent !text-white",
         });
         setStep("newPassword");
       } else {
         toast.error(response.message || "Invalid OTP", {
           duration: 4000,
-          className: "!bg-transparent !text-white",
         });
       }
     } catch (error: any) {
@@ -236,7 +231,6 @@ export default function ForgotPasswordPage() {
       console.error("Verify OTP error:", error);
       toast.error("Something went wrong. Please try again.", {
         duration: 4000,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       if (!signal.aborted && isMountedRef.current) {
@@ -253,7 +247,6 @@ export default function ForgotPasswordPage() {
     if (newPassword !== confirmPassword) {
       toast.error("Passwords do not match", {
         duration: 4000,
-        className: "!bg-transparent !text-white",
       });
       return;
     }
@@ -261,7 +254,6 @@ export default function ForgotPasswordPage() {
     if (newPassword.length < 6) {
       toast.error("Password must be at least 6 characters", {
         duration: 4000,
-        className: "!bg-transparent !text-white",
       });
       return;
     }
@@ -284,7 +276,6 @@ export default function ForgotPasswordPage() {
         toast.success("Password reset successfully!", {
           description: "Redirecting to login page...",
           duration: 3000,
-          className: "!bg-transparent !text-white",
         });
 
         // Redirect to login after 2 seconds
@@ -300,7 +291,6 @@ export default function ForgotPasswordPage() {
       } else {
         toast.error(response.message || "Failed to reset password", {
           duration: 4000,
-          className: "!bg-transparent !text-white",
         });
       }
     } catch (error: any) {
@@ -311,7 +301,6 @@ export default function ForgotPasswordPage() {
       console.error("Reset password error:", error);
       toast.error("Something went wrong. Please try again.", {
         duration: 4000,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       if (!signal.aborted && isMountedRef.current) {
@@ -341,13 +330,11 @@ export default function ForgotPasswordPage() {
       if (response.success) {
         toast.success("OTP resent to your email", {
           duration: 3000,
-          className: "!bg-transparent !text-white",
         });
         startResendTimer();
       } else {
         toast.error(response.message || "Failed to resend OTP", {
           duration: 4000,
-          className: "!bg-transparent !text-white",
         });
       }
     } catch (error: any) {
@@ -357,7 +344,6 @@ export default function ForgotPasswordPage() {
       }
       toast.error("Something went wrong. Please try again.", {
         duration: 4000,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       if (!signal.aborted && isMountedRef.current) {

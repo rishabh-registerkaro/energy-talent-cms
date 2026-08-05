@@ -156,12 +156,12 @@ export default function MediaLibrary() {
         </p>
 
         {/* UPLOAD */}
-        <div className="bg-slate-800 border border-slate-700 p-8 rounded-xl text-center mb-8">
+        <div className="bg-slate-800 border border-slate-700 shadow-sm p-10 text-center mb-8">
           <p className="text-slate-400 mb-4">
             Drag & drop files or click to upload
           </p>
 
-          <label className="bg-violet-600 hover:bg-violet-500 px-4 py-2 rounded-md cursor-pointer inline-block">
+          <label className="bg-primary hover:bg-indigo-600 text-white px-5 py-2.5 cursor-pointer inline-block">
             Upload File
             <input type="file" className="hidden" onChange={handleUpload} />
           </label>
@@ -193,7 +193,7 @@ export default function MediaLibrary() {
               return (
                 <div
                   key={asset.asset_id}
-                  className="group relative rounded-lg bg-slate-800 border border-slate-700 overflow-hidden hover:bg-slate-700 cursor-pointer transition"
+                  className="group relative bg-slate-800 border border-slate-700 p-2 overflow-hidden shadow-sm hover:shadow-lg hover:border-slate-600 cursor-pointer transition-shadow"
                   onClick={() => {
                     setSelectedAsset(asset);
                     setIsModalOpen(true);
@@ -256,47 +256,47 @@ export default function MediaLibrary() {
         {/* MODAL */}
         {isModalOpen && selectedAsset && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-slate-900 border border-slate-700 rounded-xl w-[900px] h-[520px] flex">
+            <div className="bg-slate-800 border border-slate-700 shadow-2xl w-[900px] h-[520px] flex overflow-hidden">
               {/* LEFT: Preview */}
-              <div className="w-1/2 p-4 flex items-center justify-center bg-slate-800">
+              <div className="w-1/2 p-6 flex items-center justify-center bg-slate-900 border-r border-slate-700">
                 {renderPreview(selectedAsset)}
               </div>
 
               {/* RIGHT: Details */}
-              <div className="w-1/2 p-6 overflow-y-auto space-y-4">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold">
+              <div className="w-1/2 p-8 overflow-y-auto space-y-5">
+                <div className="flex justify-between items-start gap-4">
+                  <h2 className="text-xl font-semibold break-all">
                     {selectedAsset.filename}
                   </h2>
                   <button
-                    className="text-slate-400 hover:text-white"
+                    className="shrink-0 p-1 text-slate-400 hover:text-slate-200"
                     onClick={() => setIsModalOpen(false)}
                   >
                     ✕
                   </button>
                 </div>
 
-                <div className="text-sm text-slate-400 space-y-1">
-                  <p>
-                    <span className="text-slate-300">Public ID:</span>{" "}
+                <div className="text-sm text-slate-400 space-y-2">
+                  <p className="break-all">
+                    <span className="text-slate-200 font-medium">Public ID:</span>{" "}
                     {selectedAsset.public_id}
                   </p>
                   <p>
-                    <span className="text-slate-300">Format:</span>{" "}
+                    <span className="text-slate-200 font-medium">Format:</span>{" "}
                     {selectedAsset.format}
                   </p>
                   <p>
-                    <span className="text-slate-300">Size:</span>{" "}
+                    <span className="text-slate-200 font-medium">Size:</span>{" "}
                     {(selectedAsset.bytes / 1024).toFixed(1)} KB
                   </p>
                   <p>
-                    <span className="text-slate-300">Created:</span>{" "}
+                    <span className="text-slate-200 font-medium">Created:</span>{" "}
                     {new Date(selectedAsset.created_at).toLocaleString()}
                   </p>
                 </div>
 
                 <button
-                  className="w-full bg-slate-700 hover:bg-slate-600 py-2 rounded-md cursor-pointer"
+                  className="w-full bg-slate-700 hover:bg-slate-600 border border-slate-600 py-2.5 cursor-pointer"
                   onClick={() =>
                     navigator.clipboard.writeText(selectedAsset.secure_url)
                   }
@@ -305,7 +305,7 @@ export default function MediaLibrary() {
                 </button>
 
                 <button
-                  className="w-full bg-red-600 hover:bg-red-500 py-2 rounded-md cursor-pointer"
+                  className="w-full bg-red-600 hover:bg-red-700 text-white py-2.5 cursor-pointer"
                   onClick={() => handleDelete(selectedAsset.public_id, selectedAsset.resource_type)}
                 >
                   Delete File

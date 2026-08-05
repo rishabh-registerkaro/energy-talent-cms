@@ -121,14 +121,12 @@ export default function UsersPage() {
       } else {
         toast.error(data.message || "Failed to fetch users", {
           closeButton: true,
-          className: "!bg-transparent !text-white",
         });
       }
     } catch (error: any) {
       console.error("Error fetching users:", error);
       toast.error("Failed to load users", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       setLoading(false);
@@ -149,14 +147,12 @@ export default function UsersPage() {
       } else {
         toast.error(data.message || "Failed to fetch user details", {
           closeButton: true,
-          className: "!bg-transparent !text-white",
         });
       }
     } catch (error: any) {
       console.error("Error fetching user details:", error);
       toast.error("Failed to load user details", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       setLoadingUser(false);
@@ -183,14 +179,14 @@ export default function UsersPage() {
       setCreateLoading(true);
       const res = await axios.post("/api/users", createForm, { withCredentials: true });
       if (res.data.success) {
-        toast.success("User created successfully", { closeButton: true, className: "!bg-transparent !text-white" });
+        toast.success("User created successfully", { closeButton: true, className: "" });
         setCreateDialogOpen(false);
         setCreateForm({ username: "", email: "", password: "", role: "" });
         fetchUsers(1);
       }
     } catch (error: any) {
       const msg = error.response?.data?.message || "Failed to create user";
-      toast.error(msg, { closeButton: true, className: "!bg-transparent !text-white" });
+      toast.error(msg, { closeButton: true, className: "" });
     } finally {
       setCreateLoading(false);
     }
@@ -299,13 +295,13 @@ export default function UsersPage() {
                 <SelectValue placeholder="Sort By" />
               </SelectTrigger>
               <SelectContent className="bg-slate-800 text-white border-slate-600">
-                <SelectItem value="createdAt" className="!text-white focus:bg-slate-700 cursor-pointer">
+                <SelectItem value="createdAt" className="text-white focus:bg-slate-700 cursor-pointer">
                   Created Date
                 </SelectItem>
-                <SelectItem value="username" className="!text-white focus:bg-slate-700 cursor-pointer">
+                <SelectItem value="username" className="text-white focus:bg-slate-700 cursor-pointer">
                   Username
                 </SelectItem>
-                <SelectItem value="email" className="!text-white focus:bg-slate-700 cursor-pointer">
+                <SelectItem value="email" className="text-white focus:bg-slate-700 cursor-pointer">
                   Email
                 </SelectItem>
               </SelectContent>
@@ -320,10 +316,10 @@ export default function UsersPage() {
                 <SelectValue placeholder="Order" />
               </SelectTrigger>
               <SelectContent className="bg-slate-800 text-white border-slate-600">
-                <SelectItem value="desc" className="!text-white focus:bg-slate-700 cursor-pointer">
+                <SelectItem value="desc" className="text-white focus:bg-slate-700 cursor-pointer">
                   Descending
                 </SelectItem>
-                <SelectItem value="asc" className="!text-white focus:bg-slate-700 cursor-pointer">
+                <SelectItem value="asc" className="text-white focus:bg-slate-700 cursor-pointer">
                   Ascending
                 </SelectItem>
               </SelectContent>

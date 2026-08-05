@@ -102,7 +102,6 @@ export default function PackagesPage() {
     toast.warning("Are you sure you want to delete this package block?", {
       description: "It will be removed from every page it appears on. This cannot be undone.",
       duration: 6000,
-      className: "!bg-transparent !text-white !border-gray-200",
       closeButton: true,
       action: {
         label: "Delete",
@@ -118,13 +117,11 @@ export default function PackagesPage() {
             if (res.ok) {
               toast.success("Package block deleted successfully!", {
                 duration: 3000,
-                className: "!bg-transparent !text-white !border-gray-200",
               });
               fetchBlocks(pagination.currentPage);
             } else {
               toast.error(data.message || "Failed to delete package block", {
                 duration: 3000,
-                className: "!bg-transparent !text-white !border-gray-200",
               });
             }
           } catch (error) {

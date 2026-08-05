@@ -206,7 +206,6 @@ export default function BlogPage() {
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
       return;
     }
@@ -216,7 +215,6 @@ export default function BlogPage() {
     if (file.size > maxSize) {
       toast.error("Image size should be less than 10MB", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
       return;
     }
@@ -224,7 +222,6 @@ export default function BlogPage() {
     setUploadingImage(true);
     const loadingToastId = toast.loading("Uploading image...", {
       closeButton: true,
-      className: "!bg-transparent !text-white",
     });
 
     try {
@@ -236,13 +233,11 @@ export default function BlogPage() {
       toast.dismiss(loadingToastId);
       toast.success("Image uploaded successfully!", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
     } catch (error: any) {
       toast.dismiss(loadingToastId);
       toast.error(error.message || "Failed to upload image", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       setUploadingImage(false);
@@ -509,7 +504,7 @@ export default function BlogPage() {
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingImage}
                   variant="outline"
-                  className="bg-slate-800/60 !text-white border-slate-600 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  className="bg-slate-800/60 text-white border-slate-600 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <Upload className="h-4 w-4 mr-2" />
                   {uploadingImage ? "Uploading..." : "Upload"}
@@ -518,7 +513,7 @@ export default function BlogPage() {
                   type="button"
                   onClick={openMediaLibrary}
                   variant="outline"
-                  className="bg-slate-800/60 !text-white border-slate-600 hover:bg-slate-700 cursor-pointer"
+                  className="bg-slate-800/60 text-white border-slate-600 hover:bg-slate-700 cursor-pointer"
                 >
                   <ImageIcon className="h-4 w-4 mr-2" />
                   Media Library
@@ -584,7 +579,7 @@ export default function BlogPage() {
                       <SelectItem
                         key={user._id}
                         value={user._id}
-                        className="!text-white cursor-pointer hover:bg-slate-800 focus:bg-slate-800"
+                        className="text-white cursor-pointer hover:bg-slate-800 focus:bg-slate-800"
                       >
                         {user.username}
                       </SelectItem>

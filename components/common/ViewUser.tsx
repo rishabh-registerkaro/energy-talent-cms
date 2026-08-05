@@ -122,7 +122,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
     if (selectedRole === displayedUser.role) {
       toast.info("Role is already set to this value", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
       return;
     }
@@ -130,7 +129,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
     setIsUpdating(true);
     const loadingToastId = toast.loading("Updating user role...", {
       closeButton: true,
-      className: "!bg-transparent !text-white",
     });
 
     try {
@@ -142,7 +140,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
       if (response.success && response.user) {
         toast.success("User role updated successfully!", {
           closeButton: true,
-          className: "!bg-transparent !text-white",
         });
 
         // Update local displayed user immediately
@@ -159,7 +156,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
       } else {
         toast.error(response.message || "Failed to update user role", {
           closeButton: true,
-          className: "!bg-transparent !text-white",
         });
         setSelectedRole(displayedUser.role);
       }
@@ -168,7 +164,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
       const errorMessage = error.message || "Failed to update user role";
       toast.error(errorMessage, {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
       setSelectedRole(displayedUser.role);
     } finally {
@@ -196,7 +191,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
     if (!passwordData.newPassword) {
       toast.error("New password is required", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
       return;
     }
@@ -204,7 +198,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
     if (passwordData.newPassword.length < 6) {
       toast.error("New password must be at least 6 characters long", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
       return;
     }
@@ -212,7 +205,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       toast.error("New password and confirm password do not match", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
       return;
     }
@@ -223,7 +215,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
     if (isUpdatingOwnPassword && !passwordData.currentPassword) {
       toast.error("Current password is required when changing your own password", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
       return;
     }
@@ -231,7 +222,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
     setIsChangingPassword(true);
     const loadingToastId = toast.loading("Updating password...", {
       closeButton: true,
-      className: "!bg-transparent !text-white",
     });
 
     try {
@@ -251,7 +241,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
       if (response.success) {
         toast.success("Password updated successfully!", {
           closeButton: true,
-          className: "!bg-transparent !text-white",
         });
 
         // Reset form
@@ -264,7 +253,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
       } else {
         toast.error(response.message || "Failed to update password", {
           closeButton: true,
-          className: "!bg-transparent !text-white",
         });
       }
     } catch (error: any) {
@@ -272,7 +260,6 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
       const errorMessage = error.message || "Failed to update password";
       toast.error(errorMessage, {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       setIsChangingPassword(false);
@@ -424,7 +411,7 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
                         <SelectItem
                           value="admin"
                           disabled={isRoleDisabled("admin")}
-                          className="!text-white focus:bg-slate-700"
+                          className="text-white focus:bg-slate-700"
                         >
                           Admin
                         </SelectItem>
@@ -432,14 +419,14 @@ export default function ViewUser({ user, onRoleUpdate }: ViewUserProps) {
                       <SelectItem
                         value="editor"
                         disabled={isRoleDisabled("editor")}
-                        className="!text-white focus:bg-slate-700"
+                        className="text-white focus:bg-slate-700"
                       >
                         Editor
                       </SelectItem>
                       <SelectItem
                         value="contributor"
                         disabled={isRoleDisabled("contributor")}
-                        className="!text-white focus:bg-slate-700"
+                        className="text-white focus:bg-slate-700"
                       >
                         Contributor
                       </SelectItem>

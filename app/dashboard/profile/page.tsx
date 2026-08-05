@@ -310,16 +310,19 @@ function ProfileTab({
 
   const getRoleInputColor = (role: string) => {
     switch (role?.toLowerCase()) {
+      // Flat tinted badges, matching getRoleBadgeColor in users/page.tsx and
+      // ViewUser.tsx. The old gradient + -200 text was built for dark panels
+      // and washed out completely on a light card.
       case "superadmin":
-        return "bg-gradient-to-r from-purple-600/30 to-purple-500/20 text-purple-200 border-purple-500/50  shadow-purple-500/20";
+        return "bg-purple-500/15 text-purple-400 border-purple-500/40";
       case "admin":
-        return "bg-gradient-to-r from-indigo-600/30 to-indigo-500/20 text-indigo-200 border-indigo-500/50  shadow-indigo-500/20";
+        return "bg-indigo-500/15 text-indigo-400 border-indigo-500/40";
       case "editor":
-        return "bg-gradient-to-r from-green-600/30 to-green-500/20 text-green-200 border-green-500/50  shadow-green-500/20";
+        return "bg-green-500/15 text-green-400 border-green-500/40";
       case "contributor":
-        return "bg-gradient-to-r from-yellow-600/30 to-yellow-500/20 text-yellow-200 border-yellow-500/50  shadow-yellow-500/20";
+        return "bg-yellow-500/15 text-yellow-400 border-yellow-500/40";
       default:
-        return "bg-gradient-to-r from-slate-600/30 to-slate-500/20 text-slate-200 border-slate-500/50  shadow-slate-500/20";
+        return "bg-slate-500/15 text-slate-400 border-slate-500/40";
     }
   };
 

@@ -42,6 +42,7 @@ model User {
   posts         Post[]
   servicePages  ServicePage[]
   packageBlocks PackageBlock[]
+  careers       Career[]
 
   @@map("users")
 }
@@ -73,6 +74,59 @@ model Post {
   // Paginated dashboard listing sorts by newest first
   @@index([createdAt])
   @@map("posts")
+}
+
+/// An open role shown on the frontend /careers listing and /careers/[slug]
+/// detail page. Field names mirror the frontend `Role` type in
+/// EnergyTalents/app/careers/roles-data.ts so the client API is a drop-in
+/// replacement for that static file.
+///
+/// `posted` and `days` are NOT stored — the frontend needs them for display and
+/// sorting, but they are derived from `publishedAt` at read time so they can
+/// never go stale.
+model Career {
+  id       String  @id @default(cuid())
+  title    String  @db.VarChar(500)
+  slug     String  @unique
+  /// Discipline, e.g. "Marine & Offshore". Plain string, not an enum, so adding
+  /// a discipline is a content change rather than a migration.
+  category String
+  location String
+  /// Rotational | Contract | Staff
+  type     String
+  /// Free text: "6/6 rotation", "24-month", "Residential".
+  duration String
+  /// Display string including currency, e.g. "£700–820" or "$160–190k".
+  salary   String
+  /// Rate period appended to salary, e.g. "/day" or "/yr".
+  unit     String  @default("/day")
+  featured Boolean @default(false)
+
+  /// Job description body for the detail page, authored in the TipTap editor
+  /// and stored as HTML — same as Post.content.
+  description String? @db.LongText
+  /// Short plain-text blurb used for cards and meta description fallback.
+  summary     String? @db.Text
+
+  metaTitle       String?
+  metaDescription String? @db.Text
+
+  status      PublishStatus @default(draft)
+  publishedAt DateTime?
+  authorId    String
+  author      User          @relation(fields: [authorId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([status])
+  @@index([authorId])
+  @@index([category])
+  @@index([featured])
+  // Public listing: published roles, newest first
+  @@index([status, publishedAt])
+  // Paginated dashboard listing sorts by newest first
+  @@index([createdAt])
+  @@map("careers")
 }
 
 model Category {

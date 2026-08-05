@@ -171,7 +171,6 @@ export default function UpdateCategoryPage() {
     setLoading(true);
     const loadingToastId = toast.loading("Updating category...", {
       closeButton: true,
-      className: "!bg-transparent !text-white",
     });
 
     try {
@@ -190,7 +189,6 @@ export default function UpdateCategoryPage() {
       if (data.success) {
         toast.success("Category updated successfully!", {
           closeButton: true,
-          className: "!bg-transparent !text-white",
         });
         setTimeout(() => {
           router.push("/dashboard/blog/category");
@@ -198,7 +196,6 @@ export default function UpdateCategoryPage() {
       } else {
         toast.error(data.message || "Failed to update category", {
           closeButton: true,
-          className: "!bg-transparent !text-white",
         });
       }
     } catch (error: any) {
@@ -208,7 +205,6 @@ export default function UpdateCategoryPage() {
       const errorMessage = error.message || error.errors?.join(", ") || "Something went wrong. Please try again.";
       toast.error(errorMessage, {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       setLoading(false);

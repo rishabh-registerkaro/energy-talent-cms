@@ -98,14 +98,12 @@ export default function LeadsPage() {
       } else {
         toast.error(data.message || "Failed to fetch leads", {
           closeButton: true,
-          className: "!bg-transparent !text-white",
         });
       }
     } catch (error) {
       console.error("Error fetching leads:", error);
       toast.error("Failed to load leads", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       setLoading(false);
@@ -207,7 +205,6 @@ export default function LeadsPage() {
     toast.warning("Are you sure you want to delete this lead?", {
       description: "This action cannot be undone.",
       duration: 6000,
-      className: "!bg-transparent !text-white",
       closeButton: true,
       action: {
         label: "Delete",
@@ -215,7 +212,6 @@ export default function LeadsPage() {
           try {
             const loadingToastId = toast.loading("Deleting lead...", {
               closeButton: true,
-              className: "!bg-transparent !text-white",
             });
 
             const res = await fetch(`/api/lead/${leadId}`, {
@@ -227,20 +223,17 @@ export default function LeadsPage() {
             if (res.ok) {
               toast.success("Lead deleted successfully!", {
                 closeButton: true,
-                className: "!bg-transparent !text-white",
               });
               fetchLeads(); // Refresh the list
             } else {
               const data = await res.json();
               toast.error(data.message || "Failed to delete lead", {
                 closeButton: true,
-                className: "!bg-transparent !text-white",
               });
             }
           } catch (error) {
             toast.error("Failed to delete lead", {
               closeButton: true,
-              className: "!bg-transparent !text-white",
             });
           }
         },

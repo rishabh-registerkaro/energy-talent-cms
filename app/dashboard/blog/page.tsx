@@ -180,7 +180,6 @@ export default function BlogPage() {
     toast.warning("Are you sure you want to delete this post?", {
       description: "This action cannot be undone.",
       duration: 6000,
-      className: "!bg-transparent !text-white !border-gray-200",
       closeButton: true,
       action: {
         label: "Delete",
@@ -189,10 +188,10 @@ export default function BlogPage() {
             const data = await deletePost(postId);
 
             if (data.success) {
-              toast.success("Post deleted successfully!", {duration: 3000, className:"!bg-transparent !text-white !border-gray-200"});
+              toast.success("Post deleted successfully!", {duration: 3000, className:""});
               fetchPosts();
             } else {
-              toast.error(data.message || "Failed to delete post", {duration: 3000, className:"!bg-transparent !text-white !border-gray-200"});
+              toast.error(data.message || "Failed to delete post", {duration: 3000, className:""});
             }
           } catch (error) {
             console.error("Error deleting post:", error);
@@ -242,11 +241,11 @@ export default function BlogPage() {
                 <SelectValue placeholder="All Authors" />
               </SelectTrigger>
               <SelectContent className="bg-slate-800 text-white border-slate-600">
-                <SelectItem value="all" className="!text-white focus:bg-slate-700 cursor-pointer">
+                <SelectItem value="all" className="text-white focus:bg-slate-700 cursor-pointer">
                   All Authors
                 </SelectItem>
                 {users.map((user) => (
-                  <SelectItem key={user._id} value={user._id} className="!text-white focus:bg-slate-700 cursor-pointer">
+                  <SelectItem key={user._id} value={user._id} className="text-white focus:bg-slate-700 cursor-pointer">
                     {user.username}
                   </SelectItem>
                 ))}

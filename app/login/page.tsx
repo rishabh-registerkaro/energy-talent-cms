@@ -39,7 +39,6 @@ export default function LoginPage() {
     setLoading(true);
 
     const loadingToastId = toast.loading("Logging in...", {
-      className: "!bg-transparent !text-white",
     });
 
     try {
@@ -57,7 +56,6 @@ export default function LoginPage() {
         toast.success("Login Successful", {
           closeButton: true,
           duration: 2000,
-          className: "!bg-transparent !text-white",
         });
 
         setTimeout(() => {
@@ -69,7 +67,6 @@ export default function LoginPage() {
 
         toast.error(data.message || "Login failed", {
           duration: 4000,
-          className: "!bg-transparent !text-white",
         });
       }
     } catch (error) {
@@ -79,7 +76,6 @@ export default function LoginPage() {
       
       toast.error("Something went wrong. Please try again.", {
         duration: 4000,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       setLoading(false);

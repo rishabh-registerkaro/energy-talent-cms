@@ -99,7 +99,6 @@ export default function ServicesPage() {
     toast.warning("Are you sure you want to delete this service?", {
       description: "This action cannot be undone.",
       duration: 6000,
-      className: "!bg-transparent !text-white !border-gray-200",
       closeButton: true,
       action: {
         label: "Delete",
@@ -115,13 +114,11 @@ export default function ServicesPage() {
             if (res.ok) {
               toast.success("Service deleted successfully!", {
                 duration: 3000,
-                className: "!bg-transparent !text-white !border-gray-200",
               });
               fetchServices(pagination.currentPage);
             } else {
               toast.error(data.message || "Failed to delete service", {
                 duration: 3000,
-                className: "!bg-transparent !text-white !border-gray-200",
               });
             }
           } catch (error) {

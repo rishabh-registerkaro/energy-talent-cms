@@ -271,7 +271,6 @@ function UpdatePostPageContent() {
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
       return;
     }
@@ -281,7 +280,6 @@ function UpdatePostPageContent() {
     if (file.size > maxSize) {
       toast.error("Image size should be less than 10MB", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
       return;
     }
@@ -289,7 +287,6 @@ function UpdatePostPageContent() {
     setUploadingImage(true);
     const loadingToastId = toast.loading("Uploading image...", {
       closeButton: true,
-      className: "!bg-transparent !text-white",
     });
 
     try {
@@ -301,13 +298,11 @@ function UpdatePostPageContent() {
       toast.dismiss(loadingToastId);
       toast.success("Image uploaded successfully!", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
     } catch (error: any) {
       toast.dismiss(loadingToastId);
       toast.error(error.message || "Failed to upload image", {
         closeButton: true,
-        className: "!bg-transparent !text-white",
       });
     } finally {
       setUploadingImage(false);
@@ -700,7 +695,7 @@ function UpdatePostPageContent() {
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingImage}
                   variant="outline"
-                  className="bg-slate-800/60 !text-white border-slate-600 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  className="bg-slate-800/60 text-white border-slate-600 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <Upload className="h-4 w-4 mr-2" />
                   {uploadingImage ? "Uploading..." : "Upload"}
@@ -709,7 +704,7 @@ function UpdatePostPageContent() {
                   type="button"
                   onClick={openMediaLibrary}
                   variant="outline"
-                  className="bg-slate-800/60 !text-white border-slate-600 hover:bg-slate-700 cursor-pointer"
+                  className="bg-slate-800/60 text-white border-slate-600 hover:bg-slate-700 cursor-pointer"
                 >
                   <ImageIcon className="h-4 w-4 mr-2" />
                   Media Library

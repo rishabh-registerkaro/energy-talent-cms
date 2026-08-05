@@ -30,6 +30,12 @@ export async function revalidateFrontendTags(tags: string[]): Promise<void> {
 export const serviceTags = (slug: string) => ["service-list", `service-${slug}`];
 
 /**
+ * A role appears both in the /careers listing (and the featured panel on the
+ * hero) and on its own detail page, so both have to be cleared on any change.
+ */
+export const careerTags = (slug: string) => ["career-list", `career-${slug}`];
+
+/**
  * A package block is injected into other pages, so clearing it must clear every
  * page it targets — plus `package-list` for anything listing blocks. On rename
  * or retarget, pass the union of the old and new target pages.
