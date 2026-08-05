@@ -1,0 +1,346 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Energy Talents theme
+   ───────────────────────────────────────────────────────────────────────
+   The dashboard was authored dark-first: ~2,000 hardcoded `slate-*`,
+   `indigo-*` and `text-white` utilities across 54 files. Rather than
+   rewrite every file, this layer redefines those Tailwind scales so the
+   whole CMS flips to the light Energy Talents palette at once.
+
+   Two consequences to keep in mind when editing pages from here on:
+     - `slate-800/900` now mean SURFACE and CANVAS (light), not dark panels
+     - `indigo-*` now renders as Energy Talents orange
+   New work should prefer the --et-* tokens below over slate/indigo.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Brand */
+  --et-orange: #e8620e;
+  --et-orange-strong: #c9530b;
+  --et-orange-soft: #fdf0e6;
+  --et-amber: #f0a02a;
+
+  /* Neutrals */
+  --et-ink: #101820;      /* headings */
+  --et-ink-2: #3d454d;    /* body copy */
+  --et-muted: #6e767e;    /* secondary / helper text */
+  --et-border: #e3e5e8;   /* the single hairline border used everywhere */
+  --et-surface: #ffffff;  /* cards, panels, sidebar */
+  --et-canvas: #f6f7f8;   /* page background */
+  --et-canvas-2: #eff1f3; /* recessed areas */
+}
+
+@theme {
+  /* ── Square corners ────────────────────────────────────────────────
+     The reference design uses hairline-bordered rectangles. Zeroing the
+     scale flattens every rounded-sm…rounded-3xl in the app. `rounded-full`
+     is deliberately untouched — avatars and status dots still need it. */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
+
+  /* ── slate → inverted light ramp ───────────────────────────────────
+     Dark surfaces become light ones; light text becomes dark text.
+     900 = canvas, 800 = card surface, 700 = input/secondary button. */
+  --color-slate-50: #0e1116;
+  --color-slate-100: #151b21;
+  --color-slate-200: #232a31;
+  --color-slate-300: #3d454d;
+  --color-slate-400: #6e767e;
+  --color-slate-500: #99a0a7;
+  --color-slate-600: #e3e5e8;
+  --color-slate-700: #f1f3f5;
+  --color-slate-800: #ffffff;
+  --color-slate-900: #f6f7f8;
+  --color-slate-950: #eff1f3;
+
+  /* gray/zinc are used the same dark-first way in a few files */
+  --color-gray-200: #e3e5e8;
+  --color-gray-300: #3d454d;
+  --color-gray-400: #6e767e;
+  --color-gray-600: #e3e5e8;
+  --color-gray-700: #f1f3f5;
+  --color-gray-800: #ffffff;
+  --color-gray-900: #f6f7f8;
+  --color-zinc-50: #0e1116;
+
+  /* ── indigo/blue/purple → Energy Talents orange ────────────────────
+     Every accent in the CMS was indigo. Remapping the ramp rebrands
+     buttons, active nav items, focus rings and links in one move. */
+  --color-indigo-50: #fdf0e6;
+  --color-indigo-100: #fbe1cd;
+  --color-indigo-200: #f6c39b;
+  --color-indigo-300: #f08a3e;
+  --color-indigo-400: #e8620e;
+  --color-indigo-500: #e8620e;
+  --color-indigo-600: #d2560b;
+  --color-indigo-700: #b4490a;
+  --color-indigo-800: #963c08;
+  --color-indigo-900: #7a3107;
+
+  --color-blue-300: #f08a3e;
+  --color-blue-400: #e8620e;
+  --color-blue-500: #e8620e;
+  --color-blue-600: #d2560b;
+
+  --color-purple-400: #f0a02a;
+  --color-purple-500: #e8930f;
+  --color-purple-600: #c9530b;
+  --color-violet-500: #e8930f;
+  --color-violet-600: #c9530b;
+
+  /* ── Status colours darkened for legibility on white ───────────────
+     -300/-400 were tuned for dark panels; on white they were too pale.
+     -500/-600 are left alone — those are badge fills with white text. */
+  --color-red-300: #b91c1c;
+  --color-red-400: #dc2626;
+  --color-green-200: #14532d;
+  --color-green-300: #166534;
+  --color-green-400: #15803d;
+  --color-emerald-300: #065f46;
+  --color-emerald-400: #059669;
+  --color-amber-300: #92400e;
+  --color-amber-400: #b45309;
+  --color-yellow-200: #713f12;
+  --color-yellow-300: #854d0e;
+  --color-yellow-400: #a16207;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+}
+
+:root {
+  --radius: 0px;
+  --background: var(--et-canvas);
+  --foreground: var(--et-ink);
+  --card: var(--et-surface);
+  --card-foreground: var(--et-ink);
+  --popover: var(--et-surface);
+  --popover-foreground: var(--et-ink);
+  --primary: var(--et-orange);
+  --primary-foreground: #ffffff;
+  --secondary: var(--et-canvas-2);
+  --secondary-foreground: var(--et-ink);
+  --muted: var(--et-canvas-2);
+  --muted-foreground: var(--et-muted);
+  --accent: var(--et-orange-soft);
+  --accent-foreground: var(--et-orange-strong);
+  --destructive: #dc2626;
+  --border: var(--et-border);
+  --input: var(--et-border);
+  --ring: var(--et-orange);
+  --chart-1: #e8620e;
+  --chart-2: #f0a02a;
+  --chart-3: #3d454d;
+  --chart-4: #99a0a7;
+  --chart-5: #c9530b;
+
+  /* Sidebar is a white panel separated by a hairline, matching the
+     site header on the public Energy Talents site. */
+  --sidebar: var(--et-surface);
+  --sidebar-foreground: var(--et-ink);
+  --sidebar-primary: var(--et-orange);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--et-canvas);
+  --sidebar-accent-foreground: var(--et-orange-strong);
+  --sidebar-border: var(--et-border);
+  --sidebar-ring: var(--et-orange);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Interactive affordances. Buttons rendered from shadcn primitives and
+     raw <button> elements were inconsistent about this. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="menuitem"],
+  [role="option"],
+  [role="tab"],
+  summary,
+  select,
+  a[href],
+  label[for],
+  input[type="checkbox"],
+  input[type="radio"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Dark-first compatibility overrides
+   These handle the utilities that can't be fixed by remapping a colour
+   scale, because the same class means different things in a light UI.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* NOTE ON THE `:root` PREFIX BELOW
+   Every override here targets a class Tailwind also emits. With a bare
+   selector the minifier merges the two rules and keeps Tailwind's value,
+   silently dropping the override. The `:root ` prefix makes the selector
+   distinct (and one point more specific), so it survives the build. Verify
+   after any change with:
+     grep -oE '\.text-white\{[^}]*\}' .next/static/chunks/*.css */
+
+/* `text-white` (502 uses) is heading text on dark panels — it must go dark.
+   The exception is a button label, which always sits on the SAME element as
+   its coloured background, so it can be matched precisely. */
+:root .text-white {
+  color: var(--et-ink);
+}
+
+:root .hover\:text-white:hover {
+  color: var(--et-ink);
+}
+
+:root [class*="bg-indigo-"].text-white,
+:root [class*="bg-blue-"].text-white,
+:root [class*="bg-purple-"].text-white,
+:root [class*="bg-violet-"].text-white,
+:root [class*="bg-orange-"].text-white,
+:root [class*="bg-red-"].text-white,
+:root [class*="bg-green-"].text-white,
+:root [class*="bg-emerald-"].text-white,
+:root [class*="bg-amber-"].text-white,
+:root [class*="bg-yellow-"].text-white,
+:root [class*="bg-linear-"].text-white,
+:root [class*="bg-gradient-"].text-white {
+  color: #ffffff;
+}
+
+/* Glassmorphism panels: translucent white over a dark page. On a light
+   canvas they read as invisible, so they become solid hairline cards.
+   Escaped exact selectors only — `hover:bg-white/10` must stay a hover. */
+:root .bg-white\/5,
+:root .bg-white\/10,
+:root .bg-white\/20 {
+  background-color: var(--et-surface);
+}
+
+:root .border-white\/10,
+:root .border-white\/20,
+:root .border-white\/30 {
+  border-color: var(--et-border);
+}
+
+/* `slate` doubles as both surfaces and borders, and the inverted ramp can't
+   satisfy both. Borders collapse to the single hairline colour. */
+:root .border-slate-400,
+:root .border-slate-500,
+:root .border-slate-600,
+:root .border-slate-700,
+:root .border-slate-800,
+:root .border-slate-900,
+:root .border-gray-600,
+:root .border-gray-700 {
+  border-color: var(--et-border);
+}
+
+/* Backdrop blur over a light canvas just muddies the text. */
+:root .backdrop-blur-xl,
+:root .backdrop-blur-lg,
+:root .backdrop-blur-md,
+:root .backdrop-blur-sm {
+  backdrop-filter: none;
+}
+
+/* Shadows tuned for a dark page are far too heavy on white. */
+:root .shadow-xl,
+:root .shadow-2xl,
+:root .shadow-lg {
+  box-shadow: 0 1px 2px rgb(16 24 32 / 4%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Rich-text editor output
+   ═══════════════════════════════════════════════════════════════════════ */
+.prose :where(table):not(:where([class~="not-prose"] *)) {
+  @apply border;
+  border-color: var(--et-border);
+}
+
+.prose :where(th, td):not(:where([class~="not-prose"] *)) {
+  @apply border px-4 py-2 text-left;
+  border-color: var(--et-border);
+}
+
+.prose :where(th):not(:where([class~="not-prose"] *)) {
+  background-color: var(--et-canvas);
+  color: var(--et-ink);
+}
+
+.prose :where(code):not(:where([class~="not-prose"] *)) {
+  background-color: var(--et-canvas-2);
+  color: var(--et-orange-strong);
+  @apply px-1;
+}
+
+.prose pre {
+  background-color: var(--et-canvas-2);
+  border: 1px solid var(--et-border);
+  color: var(--et-ink);
+  @apply p-4 overflow-x-auto;
+}
+
+/* Text selection — orange to match the brand accent. */
+::selection {
+  background-color: var(--et-orange);
+  color: #ffffff;
+}
+
+input::selection,
+textarea::selection {
+  background-color: var(--et-orange);
+  color: #ffffff;
+}
