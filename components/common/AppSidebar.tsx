@@ -143,6 +143,11 @@ const navigationItems = [
             url: "/dashboard/careers/disciplines",
             icon: FolderTree,
           },
+          {
+            title: "Page Content",
+            url: "/dashboard/careers/content",
+            icon: ScrollText,
+          },
         ],
       },
       {
