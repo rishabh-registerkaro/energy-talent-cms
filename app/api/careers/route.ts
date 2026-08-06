@@ -7,11 +7,7 @@ import { requireRole } from "@/app/lib/utils/authorization";
 import { EDITOR_ROLES, CONTENT_ROLES } from "@/app/lib/constants/role";
 import { revalidateFrontendTags, careerTags } from "@/app/lib/utils/revalidateFrontend";
 import { apiErrorResponse } from "@/app/lib/utils/apiError";
-import {
-  slugifyCareer,
-  CAREER_CATEGORIES,
-  CAREER_TYPES,
-} from "@/app/lib/constants/career";
+import { slugifyCareer, CAREER_TYPES } from "@/app/lib/constants/career";
 
 /** [payload key, label shown to the author] */
 const REQUIRED: Array<[string, string]> = [
@@ -54,12 +50,31 @@ export async function POST(req: NextRequest) {
     }
 
     // Reject unknown taxonomy values outright — a typo here would silently hide
-    // the role from its discipline tab on the frontend.
-    if (!CAREER_CATEGORIES.includes(body.category)) {
+    // the role from its discipline tab on the frontend. Disciplines are now
+    // editor-managed, so this validates against the table, not a constant.
+    const discipline = await prisma.discipline.findUnique({
+      where: { name: body.category },
+      select: { active: true },
+    });
+    if (!discipline) {
+      const available = await prisma.discipline.findMany({
+        where: { active: true },
+        orderBy: { position: "asc" },
+        select: { name: true },
+      });
       return NextResponse.json(
         {
           success: false,
-          message: `"${body.category}" is not a valid discipline. Choose one of: ${CAREER_CATEGORIES.join(", ")}.`,
+          message: `"${body.category}" is not a valid discipline. Choose one of: ${available.map((d) => d.name).join(", ")} — or add it under Careers → Disciplines.`,
+        },
+        { status: 400 }
+      );
+    }
+    if (!discipline.active) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `The discipline "${body.category}" is inactive and can't be assigned to new roles. Reactivate it under Careers → Disciplines.`,
         },
         { status: 400 }
       );

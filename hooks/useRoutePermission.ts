@@ -21,6 +21,7 @@ const ROUTE_PERMISSIONS: Record<string, string[]> = {
   "/dashboard/careers": ["superadmin", "admin", "editor", "contributor"],
   "/dashboard/careers/create-career": ["superadmin", "admin", "editor"],
   "/dashboard/careers/update-career": ["superadmin", "admin", "editor"],
+  "/dashboard/careers/disciplines": ["superadmin", "admin", "editor"],
   "/dashboard/blog": ["superadmin", "admin", "editor", "contributor"],
   "/dashboard/blog/create-blog": ["superadmin", "admin", "editor"],
   "/dashboard/blog/update-blog": ["superadmin", "admin", "editor"],

@@ -2,6 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { deleteFileFromMedia, uploadFileToMedia } from "@/app/lib/utils/media";
+import { useConfirm } from "@/components/common/ConfirmDialog";
 
 
 interface AdditionalFieldsProps {
@@ -46,6 +47,7 @@ const AdditionalFields = ({
   setExtraFields,
   isEditing,
 }: AdditionalFieldsProps) => {
+  const confirm = useConfirm();
   const [showAddFieldForm, setShowAddFieldForm] = useState(false);
   const [uploadingFields, setUploadingFields] = useState<Set<string>>(
     new Set()
@@ -196,9 +198,14 @@ const AdditionalFields = ({
     const metadata = fieldMetadata[fieldName];
 
     // Show confirmation
-    if (!confirm(`Are you sure you want to remove "${metadata?.label}"?`)) {
-      return;
-    }
+    const ok = await confirm({
+      title: `Remove "${metadata?.label}"?`,
+      description:
+        "The field and its value are removed from this entry. Any uploaded file it holds is deleted too.",
+      confirmLabel: "Remove field",
+      tone: "danger",
+    });
+    if (!ok) return;
     if (metadata?.publicId) {
       await deleteFileFromMedia(metadata.publicId, metadata.resource_type|| "image");
     }

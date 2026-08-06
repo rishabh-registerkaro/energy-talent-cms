@@ -138,6 +138,11 @@ const navigationItems = [
             url: "/dashboard/careers/create-career",
             icon: Plus,
           },
+          {
+            title: "Disciplines",
+            url: "/dashboard/careers/disciplines",
+            icon: FolderTree,
+          },
         ],
       },
       {

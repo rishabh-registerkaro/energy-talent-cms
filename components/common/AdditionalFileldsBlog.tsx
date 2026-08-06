@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 
 import Editor from "./Editor";
 import { deleteFileFromMedia, uploadFileToMedia } from "@/app/lib/utils/media";
+import { useConfirm } from "@/components/common/ConfirmDialog";
 
 interface AdditionalFieldData {
   label: string;
@@ -54,6 +55,7 @@ const AdditionalFieldsBlog = ({
   setAdditionalFields,
   isEditing,
 }: AdditionalFieldsBlogProps) => {
+  const confirm = useConfirm();
   const [showAddFieldForm, setShowAddFieldForm] = useState(false);
   const [uploadingFields, setUploadingFields] = useState<Set<string>>(
     new Set()
@@ -228,9 +230,14 @@ const AdditionalFieldsBlog = ({
     const field = additionalFields[fieldName];
 
     // Show confirmation
-    if (!confirm(`Are you sure you want to remove "${field?.label}"?`)) {
-      return;
-    }
+    const ok = await confirm({
+      title: `Remove "${field?.label}"?`,
+      description:
+        "The field and its value are removed from this entry. Any uploaded file it holds is deleted too.",
+      confirmLabel: "Remove field",
+      tone: "danger",
+    });
+    if (!ok) return;
 
     const metadata = fieldMetadata[fieldName];
     if (metadata?.publicId) {

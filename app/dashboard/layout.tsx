@@ -4,10 +4,12 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useRoutePermission } from "@/hooks/useRoutePermission";
 import AccessDenied from "@/components/common/AccessDenied";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ConfirmProvider } from "@/components/common/ConfirmDialog";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { loading, hasAccess} = useRoutePermission();
   return (
+    <ConfirmProvider>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
@@ -60,5 +62,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </main>
       </SidebarInset>
     </SidebarProvider>
+    </ConfirmProvider>
   );
 }
