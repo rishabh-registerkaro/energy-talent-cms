@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Star, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CAREER_CATEGORIES, CAREER_TYPES } from "@/app/lib/constants/career";
+import { CAREER_TYPES, splitRate } from "@/app/lib/constants/career";
+import { getDisciplines, type Discipline } from "@/lib/apiCallingDiscipline";
+import { useConfirm } from "@/components/common/ConfirmDialog";
 import {
   getCareers,
   deleteCareer,
@@ -28,8 +30,10 @@ const controlCls = "bg-slate-800 border border-slate-600 text-slate-200";
 // "no selection" and refuses to render the item.
 const ALL = "all";
 
-export default function CareersPage() {
+function CareersPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const confirm = useConfirm();
   const [careers, setCareers] = useState<Career[]>([]);
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(true);
@@ -42,7 +46,33 @@ export default function CareersPage() {
   const [status, setStatus] = useState(ALL);
   const [featured, setFeatured] = useState(ALL);
   const [sort, setSort] = useState<"newest" | "oldest">("newest");
-  const [page, setPage] = useState(1);
+  // Seeded from ?page= so a browser reload keeps the current page instead of
+  // snapping back to 1. Only `page` is mirrored to the URL — the filters stay
+  // as in-component state, unchanged from before.
+  const [page, setPage] = useState(() => {
+    const n = parseInt(searchParams.get("page") ?? "1", 10);
+    return Number.isFinite(n) && n > 0 ? n : 1;
+  });
+
+  /** Change page and reflect it in the URL in one go. */
+  const goToPage = useCallback(
+    (next: number) => {
+      setPage(next);
+      const qs = new URLSearchParams(window.location.search);
+      if (next <= 1) qs.delete("page");
+      else qs.set("page", String(next));
+      const query = qs.toString();
+      router.replace(query ? `?${query}` : window.location.pathname, { scroll: false });
+    },
+    [router]
+  );
+  const [disciplines, setDisciplines] = useState<Discipline[]>([]);
+
+  useEffect(() => {
+    getDisciplines()
+      .then((res) => setDisciplines(res.disciplines ?? []))
+      .catch(() => setDisciplines([]));
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -75,11 +105,18 @@ export default function CareersPage() {
   // Any filter change invalidates the current page number.
   const onFilterChange = (setter: (v: string) => void) => (v: string) => {
     setter(v);
-    setPage(1);
+    goToPage(1);
   };
 
   const handleDelete = async (career: Career) => {
-    if (!confirm(`Delete "${career.title}"? This cannot be undone.`)) return;
+    const ok = await confirm({
+      title: `Delete "${career.title}"?`,
+      description:
+        "This permanently removes the role and its job description. Anyone on its public URL will get a 404.",
+      confirmLabel: "Delete role",
+      tone: "danger",
+    });
+    if (!ok) return;
     setDeletingId(career._id);
     const toastId = toast.loading("Deleting role...");
     try {
@@ -119,7 +156,7 @@ export default function CareersPage() {
             onSubmit={(e) => {
               e.preventDefault();
               setSearch(searchInput);
-              setPage(1);
+              goToPage(1);
             }}
             className="flex gap-2 max-w-2xl"
           >
@@ -144,8 +181,10 @@ export default function CareersPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={ALL} className="cursor-pointer">All disciplines</SelectItem>
-                {CAREER_CATEGORIES.map((c) => (
-                  <SelectItem key={c} value={c} className="cursor-pointer">{c}</SelectItem>
+                {disciplines.map((d) => (
+                  <SelectItem key={d._id} value={d.name} className="cursor-pointer">
+                    {d.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -188,7 +227,7 @@ export default function CareersPage() {
               value={sort}
               onValueChange={(v) => {
                 setSort(v as "newest" | "oldest");
-                setPage(1);
+                goToPage(1);
               }}
             >
               <SelectTrigger className={`${controlCls} w-[150px]`}>
@@ -246,8 +285,10 @@ export default function CareersPage() {
                         <span className="block text-xs text-slate-400">{c.duration}</span>
                       </td>
                       <td className="px-5 py-4 text-slate-300 whitespace-nowrap">
-                        {c.salary}
-                        <span className="text-slate-400">{c.unit}</span>
+                        {splitRate(c.salary, c.unit).amount}
+                        <span className="text-slate-400">
+                          {splitRate(c.salary, c.unit).period}
+                        </span>
                       </td>
                       <td className="px-5 py-4">
                         <span
@@ -301,7 +342,7 @@ export default function CareersPage() {
               <Button
                 variant="outline"
                 disabled={!pagination.hasPrevPage}
-                onClick={() => setPage((p) => p - 1)}
+                onClick={() => goToPage(page - 1)}
                 className="border-slate-600 text-slate-200"
               >
                 Previous
@@ -309,7 +350,7 @@ export default function CareersPage() {
               <Button
                 variant="outline"
                 disabled={!pagination.hasNextPage}
-                onClick={() => setPage((p) => p + 1)}
+                onClick={() => goToPage(page + 1)}
                 className="border-slate-600 text-slate-200"
               >
                 Next
@@ -319,5 +360,17 @@ export default function CareersPage() {
         )}
       </div>
     </div>
+  );
+}
+
+/**
+ * useSearchParams() requires a Suspense boundary in an app-router client page,
+ * otherwise the whole route is forced out of static rendering.
+ */
+export default function CareersPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen w-full p-6 bg-slate-900" />}>
+      <CareersPageInner />
+    </Suspense>
   );
 }

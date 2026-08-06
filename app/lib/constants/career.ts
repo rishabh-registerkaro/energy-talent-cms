@@ -26,6 +26,23 @@ export type CareerCategory = (typeof CAREER_CATEGORIES)[number];
 export type CareerType = (typeof CAREER_TYPES)[number];
 export type CareerUnit = (typeof CAREER_UNITS)[number];
 
+/**
+ * Split a role's pay into amount and period.
+ *
+ * Authors naturally type the period into the salary box ("£700–820/day") as
+ * well as picking it from the dropdown, which renders as "£700–820/day/day".
+ * Rather than police the input, strip a trailing unit off the amount. Mirrors
+ * splitRate() on the frontend — keep the two in step.
+ */
+export function splitRate(salary: string, unit: string): { amount: string; period: string } {
+  const amount = (salary ?? "").trim();
+  const period = (unit ?? "").trim();
+  if (period && amount.toLowerCase().endsWith(period.toLowerCase())) {
+    return { amount: amount.slice(0, -period.length).trim(), period };
+  }
+  return { amount, period };
+}
+
 /** URL-safe slug from a role title — mirrors slugify() on the frontend. */
 export function slugifyCareer(title: string): string {
   return title

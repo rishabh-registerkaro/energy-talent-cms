@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -15,11 +15,12 @@ import {
 } from "@/components/ui/select";
 import Editor from "@/components/common/Editor";
 import {
-  CAREER_CATEGORIES,
   CAREER_TYPES,
   CAREER_UNITS,
   slugifyCareer,
+  splitRate,
 } from "@/app/lib/constants/career";
+import { getDisciplines, type Discipline } from "@/lib/apiCallingDiscipline";
 import {
   createCareer,
   updateCareer,
@@ -86,6 +87,27 @@ export default function CareerForm({ career }: Props) {
   // Once the author edits the slug by hand, stop deriving it from the title.
   // An existing role always counts as touched — its URL is already published.
   const [slugTouched, setSlugTouched] = useState(Boolean(career));
+
+  // Disciplines are editor-managed, so the options come from the API rather
+  // than a constant. Inactive ones are excluded, except the one already
+  // assigned to this role — otherwise editing a role on a retired discipline
+  // would silently blank its category.
+  const [disciplines, setDisciplines] = useState<Discipline[]>([]);
+
+  const loadDisciplines = useCallback(async () => {
+    try {
+      const res = await getDisciplines();
+      const all = res.disciplines ?? [];
+      setDisciplines(all.filter((d) => d.active || d.name === career?.category));
+    } catch {
+      // Non-fatal: the field falls back to whatever is already selected.
+      setDisciplines([]);
+    }
+  }, [career?.category]);
+
+  useEffect(() => {
+    loadDisciplines();
+  }, [loadDisciplines]);
 
   const set = <K extends keyof CareerPayload>(key: K, value: CareerPayload[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -192,9 +214,9 @@ export default function CareerForm({ career }: Props) {
                   <SelectValue placeholder="Select a discipline" />
                 </SelectTrigger>
                 <SelectContent>
-                  {CAREER_CATEGORIES.map((c) => (
-                    <SelectItem key={c} value={c} className="cursor-pointer">
-                      {c}
+                  {disciplines.map((d) => (
+                    <SelectItem key={d._id} value={d.name} className="cursor-pointer">
+                      {d.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -273,8 +295,12 @@ export default function CareerForm({ career }: Props) {
                 </SelectContent>
               </Select>
               <p className="text-xs text-slate-400 mt-1">
-                Displayed as {form.salary || "£700–820"}
-                <span className="text-slate-400">{form.unit}</span>
+                Displayed as{" "}
+                <span className="text-slate-200">
+                  {splitRate(form.salary || "£700–820", form.unit).amount}
+                  {splitRate(form.salary || "£700–820", form.unit).period}
+                </span>
+                {" — the period is added for you, so leave it out of Salary."}
               </p>
             </div>
           </div>

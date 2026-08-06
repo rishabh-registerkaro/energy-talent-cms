@@ -76,6 +76,35 @@ model Post {
   @@map("posts")
 }
 
+/// Editable discipline taxonomy for careers — the tabs on the public /careers
+/// page ("Oil & Gas", "Renewables", …). Previously a hardcoded constant, so
+/// adding one meant a code change.
+///
+/// `Career.category` deliberately stores the discipline NAME rather than a
+/// foreign key: the public API contract with the frontend is a plain string,
+/// and keeping it denormalized means no migration of existing rows and no
+/// join on the hot listing query. The cost is that renaming a discipline has
+/// to cascade — the PUT handler updates every career carrying the old name in
+/// the same transaction.
+model Discipline {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  slug        String  @unique
+  description String? @db.Text
+  /// Controls tab order on the frontend; ties broken by name.
+  position    Int     @default(0)
+  /// Hidden disciplines stay assigned to existing roles but can't be chosen
+  /// for new ones, so a discipline can be retired without breaking history.
+  active      Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active])
+  @@index([position])
+  @@map("disciplines")
+}
+
 /// An open role shown on the frontend /careers listing and /careers/[slug]
 /// detail page. Field names mirror the frontend `Role` type in
 /// EnergyTalents/app/careers/roles-data.ts so the client API is a drop-in

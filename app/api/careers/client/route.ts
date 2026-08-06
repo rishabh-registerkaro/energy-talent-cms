@@ -3,11 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { getCorsHeaders } from "@/app/lib/utils/cors";
 import { apiErrorResponse } from "@/app/lib/utils/apiError";
-import {
-  CAREER_CATEGORIES,
-  daysSince,
-  postedLabel,
-} from "@/app/lib/constants/career";
+import { daysSince, postedLabel } from "@/app/lib/constants/career";
+
+/** Matches the frontend listing's page size. */
+const DEFAULT_PAGE_SIZE = 6;
 
 export async function OPTIONS(req: NextRequest) {
   return NextResponse.json({}, { headers: getCorsHeaders(req.headers.get("origin")) });
@@ -33,8 +32,19 @@ export async function GET(req: NextRequest) {
     const q = searchParams.get("q")?.trim() || "";
     const featured = searchParams.get("featured")?.trim() || "";
     const sort = searchParams.get("sort") === "oldest" ? "asc" : "desc";
+
+    // Pagination is OPT-IN: only applied when `page` or `limit` is supplied.
+    // Without that, `generateStaticParams()` on the frontend — which calls this
+    // endpoint with no params and needs every slug — would silently receive
+    // only the first page and pre-render a fraction of the detail pages.
+    const pageParam = searchParams.get("page");
     const limitParam = searchParams.get("limit");
-    const limit = limitParam ? Math.min(200, Math.max(1, parseInt(limitParam, 10))) : undefined;
+    const paginated = pageParam !== null || limitParam !== null;
+
+    const limit = limitParam
+      ? Math.min(200, Math.max(1, parseInt(limitParam, 10) || DEFAULT_PAGE_SIZE))
+      : DEFAULT_PAGE_SIZE;
+    const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
 
     const where: Prisma.CareerWhereInput = { status: "published" };
 
@@ -58,10 +68,14 @@ export async function GET(req: NextRequest) {
       }));
     }
 
+    // Total matching rows, independent of the page window — the frontend needs
+    // it to render "showing X of Y" and the page count.
+    const totalCount = await prisma.career.count({ where });
+
     const careers = await prisma.career.findMany({
       where,
       orderBy: [{ publishedAt: sort }, { createdAt: sort }],
-      ...(limit ? { take: limit } : {}),
+      ...(paginated ? { skip: (page - 1) * limit, take: limit } : {}),
       select: {
         slug: true,
         title: true,
@@ -76,6 +90,15 @@ export async function GET(req: NextRequest) {
         publishedAt: true,
         createdAt: true,
       },
+    });
+
+    // Tabs come from the editor-managed Discipline table, in its configured
+    // order — not from whatever happens to be in the result set, which would
+    // reorder itself as roles are published.
+    const disciplines = await prisma.discipline.findMany({
+      where: { active: true },
+      orderBy: [{ position: "asc" }, { name: "asc" }],
+      select: { name: true, slug: true },
     });
 
     const roles = careers.map((c) => {
@@ -100,16 +123,26 @@ export async function GET(req: NextRequest) {
       {
         success: true,
         roles,
-        // Only disciplines that actually have live roles, so the frontend can
-        // build its tabs without shipping empty ones.
         filters: {
-          categories: CAREER_CATEGORIES.filter((cat) =>
-            careers.some((c) => c.category === cat)
-          ),
+          // Every active discipline, in configured order — the frontend renders
+          // these as its tabs. Sent whole rather than filtered to the current
+          // result set, otherwise choosing a tab would remove the others.
+          disciplines,
+          categories: disciplines.map((d) => d.name),
           types: [...new Set(careers.map((c) => c.type))],
           locations: [...new Set(careers.map((c) => c.location))].sort(),
         },
-        total: roles.length,
+        // `total` is every role matching the filters, NOT the length of this
+        // page — the listing shows "showing 6 of 27".
+        total: totalCount,
+        pagination: {
+          currentPage: paginated ? page : 1,
+          totalPages: paginated ? Math.max(1, Math.ceil(totalCount / limit)) : 1,
+          totalCount,
+          limit: paginated ? limit : totalCount,
+          hasNextPage: paginated ? page * limit < totalCount : false,
+          hasPrevPage: paginated ? page > 1 : false,
+        },
       },
       { status: 200, headers }
     );
