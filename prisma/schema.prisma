@@ -76,6 +76,24 @@ model Post {
   @@map("posts")
 }
 
+/// Marketing copy around the roles listing on /careers — hero, benefits,
+/// hiring steps, testimonial headers and the pipeline block.
+///
+/// A singleton: exactly one row, same pattern as AboutPage / ContactPage. The
+/// whole page lives in one JSON column so adding a benefit card or renaming a
+/// section is a content change, never a migration.
+/// Shape: app/lib/content/careers-content.ts → CareersPageContent
+model CareersPage {
+  id              String   @id @default(cuid())
+  metaTitle       String?
+  metaDescription String?  @db.Text
+  content         Json
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("careers_pages")
+}
+
 /// Editable discipline taxonomy for careers — the tabs on the public /careers
 /// page ("Oil & Gas", "Renewables", …). Previously a hardcoded constant, so
 /// adding one meant a code change.
