@@ -275,7 +275,10 @@ model TermsPolicy {
   metaTitle            String?
   metaDescription      String?  @db.Text
   title                String?
-  subTitle             String?
+  // Text, not the default varchar(191): this is an intro paragraph, and MySQL
+  // silently truncated anything longer — the shipped subtitle lost its last
+  // 40 characters mid-sentence before this was caught.
+  subTitle             String?  @db.Text
   // Each is { body: "<html>" } from the TipTap editor. Three separate
   // policies rather than one document: they are legally distinct, get updated
   // on different cycles, and the site links to each by its own anchor.
