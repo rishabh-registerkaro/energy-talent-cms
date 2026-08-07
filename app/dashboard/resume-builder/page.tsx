@@ -95,14 +95,17 @@ export default function ResumeBuilderPage() {
               {status === "published" ? "Published" : "Draft"}
             </span>
           </p>
-          <div className="mt-4 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3">
-            <p className="text-sm text-amber-200">
-              <strong className="font-semibold">Editing the plans:</strong> the{" "}
-              <code>pricing</code> table holds one row per billing period —
+          {/* Uses --et-* tokens directly rather than amber-*: the theme
+              remaps only some of that scale, so amber-200 stayed a pale
+              dark-theme value and was invisible on this light background. */}
+          <div className="mt-4 border border-[var(--et-orange)]/35 bg-[var(--et-orange-soft)] px-4 py-3">
+            <p className="text-sm leading-relaxed text-[var(--et-ink-2)]">
+              <strong className="font-semibold text-[var(--et-orange-strong)]">Editing the plans:</strong> the{" "}
+              <code className="bg-white px-1 py-0.5 text-[13px] text-[var(--et-ink)]">pricing</code> table holds one row per billing period —
               period, then each plan&rsquo;s price and its small print. The two{" "}
-              <code>pricing-…-features</code> lists are the ticks under each
+              <code className="bg-white px-1 py-0.5 text-[13px] text-[var(--et-ink)]">pricing-…-features</code> lists are the ticks under each
               plan. Change the wording freely, but keep each section&rsquo;s{" "}
-              <strong className="font-semibold">id</strong> as it is, or that
+              <strong className="font-semibold text-[var(--et-orange-strong)]">id</strong> as it is, or that
               block disappears from the website.
             </p>
           </div>
