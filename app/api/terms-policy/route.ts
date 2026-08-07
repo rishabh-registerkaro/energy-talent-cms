@@ -57,6 +57,7 @@ export async function GET(req: NextRequest) {
                     subTitle: doc.subTitle,
                     content: doc.content,
                     privacyPolicyContent: doc.privacyPolicyContent,
+                    cookiePolicyContent: doc.cookiePolicyContent,
                     updatedAt: doc.updatedAt,
                 },
             },
@@ -90,6 +91,7 @@ export async function POST(req: NextRequest) {
                 subTitle: body.subTitle,
                 content: (body.content ?? {}) as Prisma.InputJsonValue,
                 privacyPolicyContent: (body.privacyPolicyContent ?? {}) as Prisma.InputJsonValue,
+                cookiePolicyContent: (body.cookiePolicyContent ?? {}) as Prisma.InputJsonValue,
             },
         });
 
@@ -125,6 +127,9 @@ export async function PATCH(req: NextRequest) {
         }
         if (body.privacyPolicyContent !== undefined) {
             data.privacyPolicyContent = jsonValue(body.privacyPolicyContent);
+        }
+        if (body.cookiePolicyContent !== undefined) {
+            data.cookiePolicyContent = jsonValue(body.cookiePolicyContent);
         }
 
         const updated = await prisma.termsPolicy.update({

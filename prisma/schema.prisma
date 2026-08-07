@@ -276,8 +276,12 @@ model TermsPolicy {
   metaDescription      String?  @db.Text
   title                String?
   subTitle             String?
+  // Each is { body: "<html>" } from the TipTap editor. Three separate
+  // policies rather than one document: they are legally distinct, get updated
+  // on different cycles, and the site links to each by its own anchor.
   content              Json?
   privacyPolicyContent Json?
+  cookiePolicyContent  Json?
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
