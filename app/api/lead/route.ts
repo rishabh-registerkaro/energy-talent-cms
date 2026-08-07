@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { sendLeadNotification } from "@/app/lib/config/email";
 import { withMongoId } from "@/app/lib/utils/serialize";
 import { getCorsHeaders } from "@/app/lib/utils/corsHeader";
+import { isOwnLeadAttachment } from "@/app/lib/utils/leadAttachment";
 import { NextRequest, NextResponse } from "next/server";
 import { requireRole } from "@/app/lib/utils/authorization";
 import { ADMIN_ROLES } from "@/app/lib/constants/role";
@@ -69,6 +70,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // A CV is optional, but when present it must be a URL we produced in
+    // /api/lead/upload. Anything else is dropped rather than rejected: the
+    // visitor's enquiry is still worth capturing, and a stored attacker URL
+    // would be clicked later by an admin from the dashboard or the alert email.
+    let attachmentUrl: string | null = null;
+    let attachmentName: string | null = null;
+    if (typeof body.attachmentUrl === "string" && body.attachmentUrl.trim()) {
+      const candidate = body.attachmentUrl.trim();
+      if (isOwnLeadAttachment(candidate)) {
+        attachmentUrl = candidate;
+        attachmentName =
+          typeof body.attachmentName === "string" && body.attachmentName.trim()
+            ? body.attachmentName.trim().slice(0, 200)
+            : null;
+      } else {
+        console.warn("Rejected foreign lead attachment URL:", candidate.slice(0, 200));
+      }
+    }
+
     // Every submission is its own lead — the same person submitting from a
     // different page (or twice) must never overwrite an earlier lead.
     const lead = await prisma.lead.create({
@@ -80,6 +100,8 @@ export async function POST(req: NextRequest) {
           ? body.leadSource.trim().slice(0, 200)
           : "Website"),
         formData: sanitizeFormData(body.formData) as Prisma.InputJsonValue | undefined,
+        attachmentUrl,
+        attachmentName,
         status: "new",
       },
     });
@@ -93,6 +115,8 @@ export async function POST(req: NextRequest) {
         phoneNo: lead.phoneNo,
         leadSource: lead.leadSource,
         formData: lead.formData as Record<string, string> | null,
+        attachmentUrl: lead.attachmentUrl,
+        attachmentName: lead.attachmentName,
         createdAt: lead.createdAt,
       }),
       new Promise((resolve) => setTimeout(resolve, 8000)),

@@ -40,6 +40,8 @@ export async function sendLeadNotification(lead: {
   phoneNo: string;
   leadSource: string;
   formData?: Record<string, string> | null;
+  attachmentUrl?: string | null;
+  attachmentName?: string | null;
   createdAt?: Date;
 }) {
   try {
@@ -101,6 +103,15 @@ export async function sendLeadNotification(lead: {
                     ? `<tr><td colspan="2" style="padding:16px 24px 0;font-size:11px;font-weight:800;letter-spacing:0.12em;color:#818cf8;border-top:1px solid #334155;">FORM DETAILS</td></tr>${detailRows}`
                     : ""
                 }
+                ${
+                  lead.attachmentUrl
+                    ? row(
+                        "CV / RESUME",
+                        escapeHtml(lead.attachmentName || "Download attachment"),
+                        escapeHtml(lead.attachmentUrl)
+                      )
+                    : ""
+                }
                 <tr>
                   <td colspan="2" style="padding:16px 24px 20px;border-top:1px solid #334155;">
                     <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.6;">Open your CMS dashboard → <strong style="color:#cbd5e1;">Leads</strong> to view, contact or update this lead.</p>
@@ -128,6 +139,9 @@ export async function sendLeadNotification(lead: {
       `Email: ${lead.email}`,
       `Phone: ${lead.phoneNo}`,
       ...Object.entries(lead.formData ?? {}).map(([k, v]) => `${k}: ${v}`),
+      ...(lead.attachmentUrl
+        ? [`CV / Resume: ${lead.attachmentName || "attachment"} — ${lead.attachmentUrl}`]
+        : []),
       ``,
       `Received: ${when} IST`,
     ].join("\n");
