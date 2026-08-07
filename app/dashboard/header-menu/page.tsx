@@ -29,23 +29,25 @@ interface MainMenuItem {
   child_menu: ChildMenuItem[] | false;
 }
 
-// Top utility bar of the frontend header: two contact blocks + the CTA button
+/**
+ * The single call-to-action button in the site header.
+ *
+ * This used to also carry whatsappLabel / whatsappNumber / careLabel /
+ * careNumber, describing a utility bar the Energy Talents header does not
+ * have — inherited from the project this CMS was forked from. Those four
+ * fields rendered nowhere, so they were removed rather than left on screen
+ * implying they did something.
+ */
 interface HeaderContactDetails {
-  whatsappLabel: string;
-  whatsappNumber: string;
-  careLabel: string;
-  careNumber: string;
   ctaText: string;
   ctaUrl: string;
 }
 
+// Matches what the site shows today, so saving without editing is a no-op
+// instead of silently relabelling the button and pointing it at a dead URL.
 const defaultContactDetails: HeaderContactDetails = {
-  whatsappLabel: "WhatsApp Number",
-  whatsappNumber: "",
-  careLabel: "Customer Care",
-  careNumber: "",
-  ctaText: "Get A Quote",
-  ctaUrl: "/contact",
+  ctaText: "Request Technical Crew",
+  ctaUrl: "/contact-us",
 };
 
 export default function HeaderMenuPage() {
@@ -70,7 +72,15 @@ export default function HeaderMenuPage() {
       
       if (data.success && data.headerMenu) {
         setMainMenu(data.headerMenu.main_menu || []);
-        setContactDetails({ ...defaultContactDetails, ...(data.headerMenu.contact_details || {}) });
+        // Read the two fields explicitly rather than spreading the stored
+        // object: records saved before the utility bar was removed still carry
+        // whatsapp/care keys, and spreading would carry them straight back out
+        // on the next save.
+        const stored = data.headerMenu.contact_details || {};
+        setContactDetails({
+          ctaText: stored.ctaText ?? defaultContactDetails.ctaText,
+          ctaUrl: stored.ctaUrl ?? defaultContactDetails.ctaUrl,
+        });
       }
     } catch (error) {
       console.error("Error fetching header menu:", error);
@@ -360,68 +370,37 @@ export default function HeaderMenuPage() {
           </div>
         </div>
 
-        {/* Utility Bar Section — contact blocks + CTA shown above the nav strip */}
+        {/* Header CTA — the single orange button on the right of the nav */}
         <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-5 space-y-4">
           <div>
-            <h2 className="text-xl font-semibold text-white">Utility Bar (Contacts &amp; CTA)</h2>
+            <h2 className="text-xl font-semibold text-white">Header CTA Button</h2>
             <p className="text-sm text-slate-400">
-              The white bar above the navigation: WhatsApp / customer care numbers and the quote button.
+              The orange button on the right of the navigation. Leave both fields
+              blank to keep the site&rsquo;s default button.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">WhatsApp Label</label>
-              <Input
-                value={contactDetails.whatsappLabel}
-                onChange={(e) => updateContact("whatsappLabel", e.target.value)}
-                placeholder="WhatsApp Number"
-                className="bg-slate-900/60 border-slate-600 text-white placeholder-slate-400 h-10"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">WhatsApp Number</label>
-              <Input
-                value={contactDetails.whatsappNumber}
-                onChange={(e) => updateContact("whatsappNumber", e.target.value)}
-                placeholder="+91 88664 73857"
-                className="bg-slate-900/60 border-slate-600 text-white placeholder-slate-400 h-10"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Customer Care Label</label>
-              <Input
-                value={contactDetails.careLabel}
-                onChange={(e) => updateContact("careLabel", e.target.value)}
-                placeholder="Customer Care"
-                className="bg-slate-900/60 border-slate-600 text-white placeholder-slate-400 h-10"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Customer Care Number</label>
-              <Input
-                value={contactDetails.careNumber}
-                onChange={(e) => updateContact("careNumber", e.target.value)}
-                placeholder="+91 88667 87599"
-                className="bg-slate-900/60 border-slate-600 text-white placeholder-slate-400 h-10"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">CTA Button Text</label>
+              <label className="text-sm font-medium text-slate-300">Button Text</label>
               <Input
                 value={contactDetails.ctaText}
                 onChange={(e) => updateContact("ctaText", e.target.value)}
-                placeholder="Get A Quote"
+                placeholder="Request Technical Crew"
                 className="bg-slate-900/60 border-slate-600 text-white placeholder-slate-400 h-10"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">CTA Button Link</label>
+              <label className="text-sm font-medium text-slate-300">Button Link</label>
               <Input
                 value={contactDetails.ctaUrl}
                 onChange={(e) => updateContact("ctaUrl", e.target.value)}
-                placeholder="/contact"
+                placeholder="/contact-us"
                 className="bg-slate-900/60 border-slate-600 text-white placeholder-slate-400 h-10"
               />
+              <p className="text-xs text-slate-500">
+                A path on this site, e.g. <code>/contact-us</code>, or a full
+                URL. Check the page exists — a wrong path gives visitors a 404.
+              </p>
             </div>
           </div>
         </div>
@@ -429,7 +408,14 @@ export default function HeaderMenuPage() {
         {/* Main Menu Section */}
         <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-3 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-white">Main Menu</h2>
+            <div>
+              <h2 className="text-xl font-semibold text-white">Main Menu</h2>
+              <p className="text-sm text-slate-400">
+                The links across the site header. Add child items to turn an
+                entry into a dropdown — a dropdown ignores its own URL. Leave
+                this empty to keep the site&rsquo;s default navigation.
+              </p>
+            </div>
             <Button
               onClick={addMainMenu}
               size="sm"
