@@ -21,7 +21,6 @@ import {
   ListEnd,
   Contact,
   ScrollText,
-  Package,
   BriefcaseBusiness,
 } from "lucide-react";
 import {
@@ -100,24 +99,6 @@ const navigationItems = [
           {
             title: "Add New Service",
             url: "/dashboard/services/create-service",
-            icon: Plus,
-          },
-        ],
-      },
-      {
-        title: "Packages",
-        url: "/dashboard/packages",
-        icon: Package,
-        hasSubmenu: true,
-        submenuItems: [
-          {
-            title: "All Blocks",
-            url: "/dashboard/packages",
-            icon: FileText,
-          },
-          {
-            title: "Add New Block",
-            url: "/dashboard/packages/create-package",
             icon: Plus,
           },
         ],
