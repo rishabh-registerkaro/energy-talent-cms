@@ -21,7 +21,6 @@ import {
   ListEnd,
   Contact,
   ScrollText,
-  Package,
   BriefcaseBusiness,
 } from "lucide-react";
 import {
@@ -105,24 +104,6 @@ const navigationItems = [
         ],
       },
       {
-        title: "Packages",
-        url: "/dashboard/packages",
-        icon: Package,
-        hasSubmenu: true,
-        submenuItems: [
-          {
-            title: "All Blocks",
-            url: "/dashboard/packages",
-            icon: FileText,
-          },
-          {
-            title: "Add New Block",
-            url: "/dashboard/packages/create-package",
-            icon: Plus,
-          },
-        ],
-      },
-      {
         title: "Careers",
         url: "/dashboard/careers",
         icon: BriefcaseBusiness,
@@ -182,6 +163,11 @@ const navigationItems = [
         title: "Contact",
         url: "/dashboard/contact",
         icon: Contact,
+      },
+      {
+        title: "Resume Builder",
+        url: "/dashboard/resume-builder",
+        icon: FileText,
       },
       {
         title: "Terms & Policy",

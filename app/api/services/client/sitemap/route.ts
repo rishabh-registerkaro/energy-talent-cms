@@ -22,13 +22,17 @@ export async function GET(req: NextRequest) {
         // (The dashboard listing uses /api/services and still shows drafts.)
         const services = await prisma.servicePage.findMany({
             where: { status: "published" },
-            select: { id: true, slug: true, updatedAt: true },
+            select: { id: true, slug: true, updatedAt: true, template: true },
             orderBy: { updatedAt: "desc" },
         });
 
         const data = services.map((s) => ({
             id: s.id,
             slug: s.slug,
+            // Consumers filter on this: the ServicePage model also backs pages
+            // that live outside /services (e.g. the resume builder), and those
+            // must not be advertised as service URLs.
+            template: s.template,
             updatedAt: s.updatedAt,
         }));
 

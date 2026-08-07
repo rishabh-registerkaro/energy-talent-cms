@@ -71,7 +71,15 @@ export default function ServicesPage() {
 
       if (res.ok) {
         const data = await res.json();
-        setServices(data.servicePages || []);
+        // The ServicePage model also stores single pages that live elsewhere on
+        // the site — /resume-builder is one, edited from its own screen. Only
+        // division pages are real services, so only those belong in this list;
+        // showing the others invites an editor to delete a page from a screen
+        // that has nothing to do with it.
+        const onlyServices = (data.servicePages || []).filter(
+          (s: { template?: string }) => (s.template ?? "division") === "division"
+        );
+        setServices(onlyServices);
         if (data.pagination) setPagination(data.pagination);
       } else {
         toast.error("Failed to fetch services", { closeButton: true });
