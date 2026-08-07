@@ -1,3 +1,5 @@
+import { primaryOrigin } from "@/app/lib/utils/allowedOrigins";
+
 // Fire-and-forget cache invalidation on the frontend (Energy Talent website).
 // Called automatically after service page mutations so creates, edits and
 // deletes show on the live site immediately — no manual "revalidate" needed.
@@ -9,7 +11,9 @@ export const normalizeSecret = (v: string | null | undefined) =>
   (v ?? "").trim().replace(/^['"]|['"]$/g, "");
 
 export async function revalidateFrontendTags(tags: string[]): Promise<void> {
-  const FRONTEND_URL = process.env.PRODUCTION_URL || "http://localhost:3001";
+  // primaryOrigin(), not PRODUCTION_URL directly: that value may list several
+  // origins, and interpolating the raw list would build a malformed URL.
+  const FRONTEND_URL = primaryOrigin() || "http://localhost:3001";
   try {
     await fetch(`${FRONTEND_URL}/api/revalidate`, {
       method: "POST",

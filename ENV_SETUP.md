@@ -34,6 +34,8 @@ Complete guide to every environment variable the CMS needs, what it does, and ex
 | `HOSTINGER_FTP_PORT` | No | Media Storage |
 | `HOSTINGER_MEDIA_PATH` | No | Media Storage |
 | `HOSTINGER_MEDIA_URL` | **Yes** | Media Storage |
+| `HOSTINGER_LEAD_PATH` | No — defaults to `<MEDIA_PATH>/leads` | Media Storage (lead CVs) |
+| `HOSTINGER_LEAD_URL` | No — defaults to `<MEDIA_URL>/leads` | Media Storage (lead CVs) |
 
 ---
 
@@ -113,16 +115,24 @@ a3f9c2e1b4d87654321fedcba9876543210abcdef1234567890abcdef123456
 **Required.**
 
 The public URL of the **frontend** (Energy Talent website). Two things depend on this:
-1. **CORS** — only this origin is allowed to call the public APIs (blog, services, etc.)
-2. **Cache clearing** — after publishing content, the CMS calls `{PRODUCTION_URL}/api/revalidate` to clear the Next.js cache.
+1. **CORS** — only these origins may call the public APIs (blog, services, careers, lead capture)
+2. **Cache clearing** — after publishing content, the CMS calls `{PRODUCTION_URL}/api/revalidate` to clear the Next.js cache. This uses the **first** entry.
 
 ```
-PRODUCTION_URL=https://your-frontend.vercel.app
+PRODUCTION_URL=https://energytalentz.com
 ```
 
-**How to get it:** This is the URL Vercel (or whatever host) gives the frontend after deployment. No trailing slash.
+**Multiple domains.** A site is usually reachable on more than one origin — typically the apex and the `www` form. List them comma-separated, most canonical first:
 
-**If missing:** The frontend domain is blocked by CORS — all public pages stop fetching data from the CMS.
+```
+PRODUCTION_URL=https://energytalentz.com,https://www.energytalentz.com
+```
+
+Every listed origin is allowed through CORS; the **first** one is used to build the revalidation URL. A single value still works exactly as before.
+
+**How to get it:** The public URL(s) your frontend is served on — the real domain, not the `*.vercel.app` preview URL, unless that is genuinely what visitors use. No trailing slash.
+
+**If it doesn't match the domain visitors are on:** every browser request is blocked. The response comes back with a non-matching `Access-Control-Allow-Origin`, the browser discards it, and the site reports it as a network/"couldn't reach the server" error — which looks like an outage rather than a config problem. Any localhost port is always allowed, so this only bites in production.
 
 ---
 
@@ -336,6 +346,34 @@ HOSTINGER_MEDIA_URL=https://navajowhite-octopus-630288.hostingersite.com/media
 > Make sure there is **no trailing slash** at the end of this URL.
 
 **If any Hostinger variable is missing:** The media upload API fails. The upload button in the CMS Media Library returns an error. Images already saved in the database are not affected — their URLs still work.
+
+---
+
+### `HOSTINGER_LEAD_PATH` / `HOSTINGER_LEAD_URL`
+**Optional — leave unset.**
+
+CVs and resumes attached to website forms are stored separately from the editors' Media Library, in a `leads` folder derived from the two variables above:
+
+```
+HOSTINGER_MEDIA_PATH=/public_html/media-energy-talent
+  → CVs are written to  /public_html/media-energy-talent/leads
+
+HOSTINGER_MEDIA_URL=https://your-site.hostingersite.com/media-energy-talent
+  → CVs are served from https://your-site.hostingersite.com/media-energy-talent/leads
+```
+
+The folder is created automatically on the first upload. Set these two only if you need CVs somewhere else entirely:
+
+```
+HOSTINGER_LEAD_PATH=/public_html/private-cvs
+HOSTINGER_LEAD_URL=https://your-site.hostingersite.com/private-cvs
+```
+
+They must point at the same place — the path is where the file is written over FTP, the URL is what the dashboard links to. No trailing slash on either.
+
+> **Note:** uploaded CVs are served as ordinary files, so anyone holding the URL can open them. Filenames are randomised (timestamp + random suffix) so they cannot be guessed, but there is no login check on the file itself.
+
+**If the FTP variables are missing:** the upload endpoint returns a clean "File uploads are not configured" message and the visitor can still submit the form without a CV — the lead is never lost.
 
 ---
 
