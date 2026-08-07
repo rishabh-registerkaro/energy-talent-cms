@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Edit, Plus, Trash2, Search, View, ChevronLeft, ChevronRight } from "lucide-react";
+import { Edit, Plus, Trash2, Search, View, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -352,6 +352,7 @@ export default function LeadsPage() {
                 <TableHead className="text-slate-300">Name/Email</TableHead>
                 <TableHead className="text-slate-300">Phone</TableHead>
                 <TableHead className="text-slate-300">Topic</TableHead>
+                <TableHead className="text-slate-300">CV</TableHead>
                 <TableHead className="text-slate-300">Status</TableHead>
                 <TableHead className="text-slate-300">Source</TableHead>
                 <TableHead className="text-slate-300">Created</TableHead>
@@ -382,6 +383,9 @@ export default function LeadsPage() {
                     </TableCell>
                     <TableCell>
                       <div className="h-4 bg-slate-700 rounded animate-pulse w-24"></div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="h-4 bg-slate-700 rounded animate-pulse w-12"></div>
                     </TableCell>
                     <TableCell>
                       <div className="h-6 bg-slate-700 rounded-full animate-pulse w-20"></div>
@@ -421,6 +425,22 @@ export default function LeadsPage() {
                     </TableCell>
                     <TableCell className="text-slate-300">
                       {Object.values(lead.formData ?? {})[0] || "-"}
+                    </TableCell>
+                    <TableCell>
+                      {lead.attachmentUrl ? (
+                        <a
+                          href={lead.attachmentUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={lead.attachmentName || "Open CV"}
+                          className="inline-flex items-center gap-1.5 text-sm text-indigo-300 transition-colors hover:text-indigo-200 hover:underline"
+                        >
+                          <Download className="size-3.5 shrink-0" />
+                          View
+                        </a>
+                      ) : (
+                        <span className="text-slate-500 text-sm">-</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       <span
