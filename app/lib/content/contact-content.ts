@@ -1,178 +1,197 @@
-// Shared content model for the Contact Us page.
-//
-// Mirrors the Energy Talent frontend Contact page section-for-section, with
-// icons stored as string names (resolved on the frontend via
-// app/components/contactpage/icons). One JSON document — no migrations needed
-// for copy/field changes.
-
-// Icon names exported by Energy Talent/app/components/contactpage/icons.tsx
-export const CONTACT_ICON_NAMES = [
-  "BadgeCheck",
-  "Clock",
-  "Files",
-  "Gauge",
-  "Headset",
-  "MapPin",
-  "MessageCircle",
-  "Navigation",
-  "PhoneCall",
-] as const;
-
-export type ContactIconName = (typeof CONTACT_ICON_NAMES)[number] | (string & {});
+/**
+ * Contact page content.
+ *
+ * This model previously described the contact page of the project this CMS was
+ * forked from — a tabbed quote/inquiry card with document types ("Degree
+ * Certificate", "PCC"), legalisation destinations, a WhatsApp hotline and an
+ * office map embed. None of it existed on the Energy Talents contact page, so
+ * an editor was given fields that changed nothing and none for the copy that
+ * was actually on screen.
+ *
+ * The shape below mirrors the live page section by section: hero, the enquiry
+ * form's surrounding copy, the 24/7 duty-desk panel, the FAQ and the closing
+ * banner.
+ */
 
 export type ContactPageContent = {
   hero: {
+    /** Green-dot pill, e.g. "Enquiry desk open now" */
     badge: string;
+    /** Muted text after the badge, e.g. "· Tirunelveli, Tamil Nadu, India" */
+    badgeSuffix: string;
     titleLead: string;
-    /** Rendered in the gold gradient */
+    /** Rendered in the orange gradient */
     titleAccent: string;
-    /** Wrap words in *asterisks* to render them bold white (e.g. *15 minutes*) */
     subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
   };
-  /** The tabbed "Request a Quote / General Inquiry" card */
-  inquiry: {
-    tabQuote: string;
-    tabInquiry: string;
-    quoteHeading: string;
-    quoteIntro: string;
-    phoneCodes: string[];
-    documentTypes: string[];
-    destinations: string[];
-    inquiryHeading: string;
-    inquiryIntro: string;
-    ctaQuote: string;
-    ctaInquiry: string;
-    privacyNote: string;
+
+  /** Copy around the enquiry form. The fields themselves are fixed. */
+  enquiry: {
+    kicker: string;
+    heading: string;
+    intro: string;
+    /** Label above the routing card, e.g. "This enquiry routes to" */
+    routingLabel: string;
+    deskName: string;
+    /** Shown until a region is picked. */
+    deskLocation: string;
+    /** Options in the "Project region" select, in order. */
+    regions: string[];
+    consentText: string;
+    submitLabel: string;
+    /** Small print beside the submit button. */
+    replyNote: string;
     successHeading: string;
     successText: string;
     successButton: string;
   };
-  /** Right column: quick-contact cards, trust panel, office map card */
-  aside: {
-    whatsapp: { title: string; sub: string; url: string };
-    call: { title: string; sub: string; url: string };
-    trustKicker: string;
-    trust: { icon: ContactIconName; value: string; label: string }[];
-    office: {
-      name: string;
-      /** Multi-line address (line breaks preserved) */
-      address: string;
-      hours: string;
-      mapEmbedUrl: string;
-      directionsUrl: string;
-    };
+
+  /** The dark 24/7 duty-desk band. */
+  emergency: {
+    badge: string;
+    heading: string;
+    body: string;
+    phoneLabel: string;
+    phoneNumber: string;
+    emailLabel: string;
+    emailAddress: string;
   };
+
   faq: {
     kicker: string;
     heading: string;
+    intro: string;
     items: { q: string; a: string }[];
+  };
+
+  /** Closing banner above the footer. */
+  cta: {
+    heading: string;
+    body: string;
+    primaryLabel: string;
+    secondaryLabel: string;
   };
 };
 
 /**
- * The live frontend content — prefills the dashboard editor when the page
- * hasn't been created yet.
+ * The live frontend copy — prefills the dashboard editor when the page has not
+ * been created yet, so saving without editing changes nothing on the site.
  */
 export function defaultContactContent(): ContactPageContent {
   return {
     hero: {
-      badge: "WE'RE HERE TO HELP",
-      titleLead: "Let's legalize",
-      titleAccent: "your journey",
+      badge: "Enquiry desk open now",
+      badgeSuffix: "· Tirunelveli, Tamil Nadu, India",
+      titleLead: "Tell us what the project needs —",
+      titleAccent: "we'll crew it",
       subtitle:
-        "Our legal verification experts typically reply within *15 minutes* during business hours — by phone, WhatsApp or email.",
+        "Every enquiry reaches a named coordinator in the nearest hub, not a shared inbox. Crew requests are answered within four working hours; urgent rotation issues, in fifteen minutes.",
+      ctaPrimary: "Request Technical Crew →",
+      ctaSecondary: "Find Your Hub",
     },
-    inquiry: {
-      tabQuote: "Request a Quote",
-      tabInquiry: "General Inquiry",
-      quoteHeading: "Get pricing for your documents",
-      quoteIntro:
-        "Tell us what you need legalized — we'll reply with a fixed, all-inclusive quote.",
-      phoneCodes: ["+91", "+971", "+966", "+1", "+44"],
-      documentTypes: [
-        "Degree Certificate",
-        "Birth Certificate",
-        "Marriage Certificate",
-        "PCC",
-        "Commercial Documents",
-        "Other",
+    enquiry: {
+      kicker: "Send an enquiry",
+      heading: "One form. Straight to our desk.",
+      intro:
+        "Tell us the project region and scope, and our mobilization desk takes it from there — sourcing, vetting and travel handled end to end.",
+      routingLabel: "This enquiry routes to",
+      deskName: "Our mobilization desk",
+      deskLocation: "Tirunelveli, Tamil Nadu, India",
+      regions: [
+        "Middle East & Africa",
+        "Europe & North Sea",
+        "Asia-Pacific",
+        "The Americas",
+        "India / domestic",
+        "Multiple / global",
       ],
-      destinations: [
-        "UAE",
-        "Saudi Arabia",
-        "Germany",
-        "France",
-        "Australia",
-        "USA",
-        "UK",
-        "Other",
-      ],
-      inquiryHeading: "Ask us anything",
-      inquiryIntro:
-        "Questions about a service, partnership or an existing order — we'll route it to the right desk.",
-      ctaQuote: "Get Free Consultation & Pricing",
-      ctaInquiry: "Send Message",
-      privacyNote:
-        "Your personal data and document details are protected by enterprise-grade encryption.",
-      successHeading: "Message received!",
+      consentText:
+        "I agree that Energy Talents may store and process these details to respond to my enquiry.",
+      submitLabel: "Send Enquiry →",
+      replyNote: "Typical reply: under 4 working hours",
+      successHeading: "Enquiry received",
       successText:
-        "An expert will get back to you within 15 minutes during business hours.",
-      successButton: "Send another message",
+        "Your request is with our mobilization desk. We'll reply within four working hours.",
+      successButton: "Send another enquiry",
     },
-    aside: {
-      whatsapp: {
-        title: "Chat on WhatsApp",
-        sub: "Fastest • +91 88664 73857",
-        url: "https://wa.me/918866473857",
-      },
-      call: {
-        title: "Call Support Hotline",
-        sub: "Mon–Sat • +91 88667 87599",
-        url: "tel:+918866787599",
-      },
-      trustKicker: "WHY CLIENTS TRUST US",
-      trust: [
-        { icon: "BadgeCheck", value: "MEA", label: "Registered Partner" },
-        { icon: "Gauge", value: "99.7%", label: "Success Rate" },
-        { icon: "Files", value: "25K+", label: "Documents Legalized" },
-      ],
-      office: {
-        name: "Energy Talent — Head Office",
-        address: "Level 4, Connaught Place Central Desk,\nNew Delhi 110001, India",
-        hours: "Mon–Sat, 9:30 AM – 6:30 PM IST",
-        mapEmbedUrl:
-          "https://www.openstreetmap.org/export/embed.html?bbox=77.2065%2C28.6255%2C77.2270%2C28.6380&layer=mapnik&marker=28.6315%2C77.2167",
-        directionsUrl:
-          "https://www.openstreetmap.org/?mlat=28.6315&mlon=77.2167#map=16/28.6315/77.2167",
-      },
+    emergency: {
+      badge: "24/7 Duty Desk",
+      heading: "Crew down at 3am? Call, don't email.",
+      body: "Flight disruptions, medical evacuations, visa bottlenecks and weather stand-downs go straight to a named duty manager in the nearest hub — acknowledged within fifteen minutes, any hour of any day.",
+      phoneLabel: "24/7 emergency line",
+      phoneNumber: "+91 91766 74449",
+      emailLabel: "Email us",
+      emailAddress: "immanuel@energytalentz.com",
     },
     faq: {
-      kicker: "BEFORE YOU REACH OUT",
-      heading: "Quick answers",
+      kicker: "Before you write",
+      heading: "Questions we get most often",
+      intro:
+        "Still unsure which desk you need? Send the enquiry anyway — we'll route it internally.",
       items: [
         {
-          q: "Can I drop off my documents in person?",
-          a: "Yes — you can hand over documents at any of our four offices (New Delhi, Mumbai, Hyderabad, Vizag) during business hours. Most clients prefer our free insured doorstep pickup instead.",
+          q: "How fast can you mobilize a crew?",
+          a: "For disciplines where we hold pre-cleared standby pools, under 72 hours from instruction to on-site — medicals, certifications and travel included. Scarce or highly specialised roles typically run two to four weeks. Tell us the window in the form and we'll confirm what's realistic in the first reply.",
         },
         {
-          q: "How do I track an existing order?",
-          a: "Use the tracking reference from your pickup receipt — enter it on the Track Order page, or send it to us on WhatsApp for an instant status update at every checkpoint.",
+          q: "Do contractors pay any fees?",
+          a: "Never. Contractors pay nothing for placement, visas or mobilization — our fee is invoiced to the operator. Anyone asking a worker for money is not us.",
         },
         {
-          q: "What are your operating hours?",
-          a: "Monday to Saturday, 9:30 AM – 6:30 PM IST. WhatsApp messages received after hours are answered first thing the next business day.",
+          q: "Which regions and contract types do you cover?",
+          a: "Rotational, contract, staff and project-hire crews across the Middle East & Africa, Europe & North Sea, Asia-Pacific and the Americas — oil & gas, renewables, marine and heavy infrastructure.",
         },
         {
-          q: "Do you serve cities without a branch office?",
-          a: "Yes — our insured courier network covers all of India. Documents from any city are collected, processed through the correct state and MEA desks, and returned to your door.",
+          q: "What do you need from me to start?",
+          a: "A rough scope is enough: role or discipline, headcount, region, rotation and start window. We'll come back with an indicative crew plan and rate band; contracts and compliance follow once you confirm.",
+        },
+        {
+          q: "How are certifications verified?",
+          a: "Every ticket — BOSIET, OPITO, GWO, MLC 2006 and discipline-specific credentials — is validated against the issuing body before mobilization, with medicals and right-to-work checks logged on file.",
+        },
+        {
+          q: "Is my project information confidential?",
+          a: "Yes. Enquiries are handled by a named coordinator under NDA by default, stored under GDPR-aligned controls, and never shared beyond the desk crewing your project.",
         },
       ],
+    },
+    cta: {
+      heading: "Not sure where to start?",
+      body: "Send the enquiry and we'll route it. Or read how we mobilize, vet and pay technical crews for energy projects worldwide.",
+      primaryLabel: "Send an Enquiry →",
+      secondaryLabel: "About Energy Talents",
     },
   };
 }
 
 export const CONTACT_META_DEFAULTS = {
-  metaTitle: "Contact Us — Energy Talent",
+  metaTitle: "Contact Us",
   metaDescription:
-    "Talk to Energy Talent's legalization experts — request a quote or ask a question by phone, WhatsApp or email. We typically reply within 15 minutes.",
+    "Tell us what the project needs and we'll crew it. Every enquiry reaches a named coordinator in the nearest hub — crew requests answered within four working hours, urgent rotation issues in fifteen minutes.",
 };
+
+/** Fill any missing key from the defaults, so a partial record still renders. */
+export function withContactDefaults(raw: unknown): ContactPageContent {
+  const d = defaultContactContent();
+  if (!raw || typeof raw !== "object") return d;
+  const c = raw as Partial<ContactPageContent>;
+  return {
+    hero: { ...d.hero, ...(c.hero ?? {}) },
+    enquiry: {
+      ...d.enquiry,
+      ...(c.enquiry ?? {}),
+      regions: Array.isArray(c.enquiry?.regions) && c.enquiry.regions.length > 0
+        ? c.enquiry.regions
+        : d.enquiry.regions,
+    },
+    emergency: { ...d.emergency, ...(c.emergency ?? {}) },
+    faq: {
+      ...d.faq,
+      ...(c.faq ?? {}),
+      items: Array.isArray(c.faq?.items) ? c.faq.items : d.faq.items,
+    },
+    cta: { ...d.cta, ...(c.cta ?? {}) },
+  };
+}

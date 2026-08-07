@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { ChevronDown, ChevronRight, FileText, AlignLeft, ShieldCheck, RefreshCw } from "lucide-react";
+import { ChevronDown, ChevronRight, FileText, AlignLeft, ShieldCheck, Cookie, RefreshCw } from "lucide-react";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import dynamic from "next/dynamic";
 
@@ -17,6 +17,7 @@ interface TermsPolicyFormData {
     subTitle: string;
     content: { body: string };
     privacyPolicyContent: { body: string };
+    cookiePolicyContent: { body: string };
 }
 
 const defaultFormData: TermsPolicyFormData = {
@@ -26,6 +27,7 @@ const defaultFormData: TermsPolicyFormData = {
     subTitle: "Please read these terms carefully before using our services.",
     content: { body: "" },
     privacyPolicyContent: { body: "" },
+    cookiePolicyContent: { body: "" },
 };
 
 function AutoResizeTextarea({
@@ -92,6 +94,7 @@ export default function TermsPolicyDashboardPage() {
         meta: true,
         terms: true,
         privacy: false,
+        cookies: false,
     });
 
     useEffect(() => {
@@ -106,6 +109,7 @@ export default function TermsPolicyDashboardPage() {
                         subTitle: res.data.subTitle || defaultFormData.subTitle,
                         content: { body: res.data.content?.body || "" },
                         privacyPolicyContent: { body: res.data.privacyPolicyContent?.body || "" },
+                        cookiePolicyContent: { body: res.data.cookiePolicyContent?.body || "" },
                     });
                     setIsNew(false);
                 } else {
@@ -310,6 +314,31 @@ export default function TermsPolicyDashboardPage() {
                                                 setFormData((prev) => ({ ...prev, privacyPolicyContent: { body: html } }))
                                             }
                                             placeholder="Write the full privacy policy here…"
+                                        />
+                                    </div>
+                                </div>
+                            </Collapsible.Content>
+                        </div>
+                    </Collapsible.Root>
+
+                    {/* Cookie Policy Content */}
+                    <Collapsible.Root open={openSections.cookies} onOpenChange={() => toggleSection("cookies")}>
+                        <div className="overflow-hidden rounded-xl border border-slate-700/80 bg-slate-800/40 backdrop-blur-sm">
+                            <Collapsible.Trigger className="w-full cursor-pointer px-5 py-4 hover:bg-slate-800/60 transition-colors">
+                                <SectionHeader icon={<Cookie size={15} />} title="Cookie Policy Content" isOpen={openSections.cookies} />
+                            </Collapsible.Trigger>
+                            <Collapsible.Content>
+                                <div className="border-t border-slate-700/60 px-5 pb-6 pt-5">
+                                    <p className="mb-4 text-[12px] text-slate-500">
+                                        Content shown in the <span className="text-indigo-400 font-medium">Cookie Policy</span> tab on the live page.
+                                    </p>
+                                    <div className="rounded-xl overflow-hidden border border-slate-700/60">
+                                        <Tiptap
+                                            content={formData.cookiePolicyContent.body}
+                                            onChange={(html) =>
+                                                setFormData((prev) => ({ ...prev, cookiePolicyContent: { body: html } }))
+                                            }
+                                            placeholder="Write the full cookie policy here…"
                                         />
                                     </div>
                                 </div>
