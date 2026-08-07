@@ -12,9 +12,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <ConfirmProvider>
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
-        {/* <main className="flex-1 w-full  overflow-auto">{children}</main> */}
-        <main className="flex-1 w-full overflow-auto">
+      {/* min-w-0: SidebarInset is a flex item, and a flex item's default
+          min-width:auto refuses to shrink below its content. Without this a
+          wide table (e.g. Leads) stretches the whole page instead of
+          scrolling inside its own card, pushing the last column off screen. */}
+      <SidebarInset className="min-w-0">
+        <main className="min-w-0 flex-1 w-full overflow-auto">
           {loading ? (
            <div className="min-h-screen w-full p-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
            <div className="max-w-7xl mx-auto space-y-6">

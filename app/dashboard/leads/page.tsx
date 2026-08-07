@@ -346,16 +346,19 @@ export default function LeadsPage() {
 
         {/* Leads Table */}
         <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-6">
-          <Table>
+          {/* min-w keeps the eight columns readable: the table fills wide
+              screens and scrolls inside the card below that, instead of
+              squeezing every cell into an unreadable wrap. */}
+          <Table className="min-w-[960px]">
             <TableHeader>
               <TableRow className="border-slate-700 hover:bg-transparent">
-                <TableHead className="text-slate-300">Name/Email</TableHead>
-                <TableHead className="text-slate-300">Phone</TableHead>
-                <TableHead className="text-slate-300">Topic</TableHead>
-                <TableHead className="text-slate-300">CV</TableHead>
-                <TableHead className="text-slate-300">Status</TableHead>
-                <TableHead className="text-slate-300">Source</TableHead>
-                <TableHead className="text-slate-300">Created</TableHead>
+                <TableHead className="text-slate-300 whitespace-nowrap">Name/Email</TableHead>
+                <TableHead className="text-slate-300 whitespace-nowrap">Phone</TableHead>
+                <TableHead className="text-slate-300 whitespace-nowrap">Topic</TableHead>
+                <TableHead className="text-slate-300 whitespace-nowrap">CV</TableHead>
+                <TableHead className="text-slate-300 whitespace-nowrap">Status</TableHead>
+                <TableHead className="text-slate-300 whitespace-nowrap">Source</TableHead>
+                <TableHead className="text-slate-300 whitespace-nowrap">Created</TableHead>
                 <TableHead className="text-slate-300 text-center">
                   Actions
                 </TableHead>
@@ -420,7 +423,7 @@ export default function LeadsPage() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-slate-300">
+                    <TableCell className="text-slate-300 whitespace-nowrap">
                       {lead.phoneNo}
                     </TableCell>
                     <TableCell className="text-slate-300">
@@ -455,7 +458,7 @@ export default function LeadsPage() {
                     <TableCell className="text-slate-300 text-sm">
                       {lead.leadSource || "Website"}
                     </TableCell>
-                    <TableCell className="text-slate-400 text-sm">
+                    <TableCell className="text-slate-400 text-sm whitespace-nowrap">
                       {formatDate(lead.createdAt)}
                     </TableCell>
                     <TableCell>
