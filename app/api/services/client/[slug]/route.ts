@@ -41,8 +41,12 @@ export async function GET(
 ) {
     try {
         const { slug } = await context.params;
-        const servicePage = await prisma.servicePage.findUnique({
-            where: { slug },
+        // Public endpoint: drafts must not be readable. findUnique on the slug
+        // alone returned unpublished pages to anyone who guessed the URL, while
+        // the sibling sitemap route already filtered on status — this brings the
+        // two in line.
+        const servicePage = await prisma.servicePage.findFirst({
+            where: { slug, status: "published" },
             include: { author: { select: { id: true, username: true } } },
         });
 
