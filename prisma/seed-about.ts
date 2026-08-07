@@ -4,10 +4,7 @@
 //   npx tsx prisma/seed-about.ts
 
 import { PrismaClient, Prisma } from "@prisma/client";
-import {
-  ABOUT_META_DEFAULTS,
-  defaultAboutContent,
-} from "../app/lib/content/about-content";
+import { DEFAULT_ABOUT_CONTENT } from "../app/lib/content/about-content";
 
 const prisma = new PrismaClient();
 
@@ -26,9 +23,10 @@ async function withRetry<T>(label: string, fn: () => Promise<T>, tries = 5): Pro
 
 async function main() {
   const data = {
-    metaTitle: ABOUT_META_DEFAULTS.metaTitle,
-    metaDescription: ABOUT_META_DEFAULTS.metaDescription,
-    content: defaultAboutContent() as unknown as Prisma.InputJsonValue,
+    metaTitle: "About Us",
+    metaDescription:
+      "Energy crewing specialists based in Tamil Nadu, India. We recruit, vet and mobilize skilled technical crews to energy projects worldwide — and stay reachable when a rotation goes sideways.",
+    content: DEFAULT_ABOUT_CONTENT as unknown as Prisma.InputJsonValue,
   };
   await withRetry("about page", async () => {
     const existing = await prisma.aboutPage.findFirst();
