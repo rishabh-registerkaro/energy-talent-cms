@@ -41,21 +41,16 @@ const contractManpowerSupply: ServicePageContent = {
     { label: "Contract Manpower Supply" },
   ],
   badge: "Contract Manpower Supply",
-  badgeIcon: "briefcase",
   titleLead: "Engineered workforce solutions for the",
   titleAccent: "energy sector",
   subtitle:
     "We deploy highly technical, compliant and vetted engineering talent across upstream, downstream and renewable projects — with rotation, payroll and mobilization handled end to end.",
-  chips: [],
-  formTitle: "Request technical crew",
-  formSubtitle: "Tell us the scope and we'll respond within one business day.",
   sections: [
     {
       kind: "chips",
       id: "hero-badges",
       label: "Hero trust badges",
       heading: "Trust badges",
-      chipIcon: "check",
       chips: [
         "Vetted technical crews",
         "Compliance-first",
@@ -71,42 +66,36 @@ const contractManpowerSupply: ServicePageContent = {
         "Pre-vetted talent pools across every technical niche the energy sector demands — ready to mobilize on your timeline.",
       cards: [
         {
-          icon: "briefcase",
           title: "Contract Staffing",
           points: [
             "EPC managers, discipline engineers and commissioning leads for megaprojects.",
           ],
         },
         {
-          icon: "briefcase",
           title: "Employer of Record (EOR)",
           points: [
             "DP operators, ROV pilots, toolpushers and subsea engineering crews.",
           ],
         },
         {
-          icon: "briefcase",
           title: "Global Mobility & Logistics",
           points: [
             "Safety officers, QA/QC inspectors and incident-free site governance.",
           ],
         },
         {
-          icon: "briefcase",
           title: "Permanent Direct Hire",
           points: [
             "GWO-certified wind techs, solar EPC crews and grid integration teams.",
           ],
         },
         {
-          icon: "briefcase",
           title: "Executive Search",
           points: [
             "Country managers, asset directors and scarce senior technical leadership.",
           ],
         },
         {
-          icon: "briefcase",
           title: "Managed Service Provision (MSP)",
           points: [
             "Compliant local-entity payroll, visas and end-to-end travel logistics.",
@@ -122,10 +111,10 @@ const contractManpowerSupply: ServicePageContent = {
       heading: "At a glance",
       paragraphs: [],
       stats: [
-        { icon: "clock", value: "Fast", label: "Vetted shortlist" },
-        { icon: "globe", value: "Global", label: "Deployment reach" },
-        { icon: "clock", value: "24/7", label: "Rotation support" },
-        { icon: "check", value: "0 fees", label: "Contractors never pay" },
+        { value: "Fast", label: "Vetted shortlist" },
+        { value: "Global", label: "Deployment reach" },
+        { value: "24/7", label: "Rotation support" },
+        { value: "0 fees", label: "Contractors never pay" },
       ],
     },
     {
@@ -217,7 +206,6 @@ const contractManpowerSupply: ServicePageContent = {
       id: "risk-badges",
       label: "Accreditations",
       heading: "Accreditations",
-      chipIcon: "shield",
       chips: ["ISO 9001", "OPITO", "GWO", "MLC 2006"],
     },
     {

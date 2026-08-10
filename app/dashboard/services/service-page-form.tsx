@@ -23,7 +23,6 @@ import {
 } from "lucide-react";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import {
-  ICON_NAMES,
   SECTION_KIND_LABELS,
   createSection,
   emptyServicePageContent,
@@ -76,29 +75,7 @@ function Field({
   );
 }
 
-function IconSelect({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  const known = (ICON_NAMES as readonly string[]).includes(value);
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className={`${selectCls} w-full`}
-    >
-      {!known && value && <option value={value}>{value} (custom)</option>}
-      {ICON_NAMES.map((n) => (
-        <option key={n} value={n}>
-          {n}
-        </option>
-      ))}
-    </select>
-  );
-}
+
 
 function RemoveButton({ onClick, title }: { onClick: () => void; title?: string }) {
   return (
@@ -218,7 +195,6 @@ function IntroEditor({
           {stats.map((stat, i) => (
             <div key={i} className="flex items-start gap-2">
               <div className="grid grid-cols-3 gap-2 flex-1">
-                <IconSelect value={stat.icon} onChange={(icon) => setStat(i, { icon })} />
                 <Input
                   className={inputCls}
                   value={stat.value}
@@ -243,7 +219,7 @@ function IntroEditor({
             onClick={() =>
               onChange({
                 ...section,
-                stats: [...stats, { icon: "Globe", value: "", label: "" }],
+                stats: [...stats, { value: "", label: "" }],
               })
             }
             label="Add stat"
@@ -283,10 +259,7 @@ function CardsEditor({
               }
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Field label="Icon">
-              <IconSelect value={card.icon} onChange={(icon) => setCard(i, { icon })} />
-            </Field>
+          <div className="grid grid-cols-1 gap-3">
             <Field label="Title" required>
               <Input
                 className={inputCls}
@@ -310,7 +283,7 @@ function CardsEditor({
         onClick={() =>
           onChange({
             ...section,
-            cards: [...section.cards, { icon: "Globe", title: "", points: [""] }],
+            cards: [...section.cards, { title: "", points: [""] }],
           })
         }
         label="Add card"
@@ -332,12 +305,6 @@ function ChipsEditor({
         value={section.intro}
         onChange={(intro) => onChange({ ...section, intro })}
       />
-      <Field label="Chip icon">
-        <IconSelect
-          value={section.chipIcon}
-          onChange={(chipIcon) => onChange({ ...section, chipIcon })}
-        />
-      </Field>
       <Field label="Chips" required>
         <StringListEditor
           items={section.chips}
@@ -696,8 +663,6 @@ export function normalizeContent(raw: unknown): ServicePageContent {
     ...empty,
     ...c,
     breadcrumb: Array.isArray(c.breadcrumb) && c.breadcrumb.length ? c.breadcrumb : empty.breadcrumb,
-    chips: Array.isArray(c.chips) ? c.chips : [],
-    formCountries: Array.isArray(c.formCountries) ? c.formCountries : [],
     sections: Array.isArray(c.sections)
       ? c.sections.filter((s): s is Section => !!s && typeof s === "object" && "kind" in s)
       : [],
@@ -711,10 +676,6 @@ function cleanContent(content: ServicePageContent): ServicePageContent {
   return {
     ...content,
     breadcrumb: content.breadcrumb.filter((b) => b.label.trim()),
-    chips: content.chips.filter((c) => c.title.trim() || c.sub.trim()),
-    formCountries: trimList(content.formCountries ?? []),
-    formCountryLabel: content.formCountryLabel?.trim() || undefined,
-    helpPhone: content.helpPhone?.trim() || undefined,
     sections: content.sections.map((section) => {
       const intro =
         "intro" in section ? { intro: section.intro?.trim() || undefined } : {};
@@ -884,11 +845,6 @@ export default function ServicePageForm({
   const setBreadcrumb = (i: number, patch: Partial<{ label: string; href: string }>) =>
     setContent({
       breadcrumb: content.breadcrumb.map((b, idx) => (idx === i ? { ...b, ...patch } : b)),
-    });
-
-  const setChip = (i: number, patch: Partial<(typeof content.chips)[number]>) =>
-    setContent({
-      chips: content.chips.map((c, idx) => (idx === i ? { ...c, ...patch } : c)),
     });
 
   // ── Article section helpers ───────────────────────────────────────────────
@@ -1142,21 +1098,15 @@ export default function ServicePageForm({
                   <Input
                     className={inputCls}
                     value={content.badge}
-                    placeholder="TRAVEL & TOURISM"
+                    placeholder="CONTRACT MANPOWER SUPPLY"
                     onChange={(e) => setContent({ badge: e.target.value })}
-                  />
-                </Field>
-                <Field label="Badge icon">
-                  <IconSelect
-                    value={content.badgeIcon}
-                    onChange={(badgeIcon) => setContent({ badgeIcon })}
                   />
                 </Field>
                 <Field label="Title lead">
                   <Input
                     className={inputCls}
                     value={content.titleLead}
-                    placeholder="Explore the world with"
+                    placeholder="Engineered workforce solutions for the"
                     onChange={(e) => updateTitle("titleLead", e.target.value)}
                   />
                 </Field>
@@ -1164,7 +1114,7 @@ export default function ServicePageForm({
                   <Input
                     className={inputCls}
                     value={content.titleAccent}
-                    placeholder="complete confidence"
+                    placeholder="energy sector"
                     onChange={(e) => updateTitle("titleAccent", e.target.value)}
                   />
                 </Field>
@@ -1180,86 +1130,6 @@ export default function ServicePageForm({
                 />
               </Field>
 
-              <Field label="Hero chips">
-                <div className="space-y-2">
-                  {content.chips.map((chip, i) => (
-                    <div key={i} className="flex items-start gap-2">
-                      <div className="grid grid-cols-3 gap-2 flex-1">
-                        <IconSelect value={chip.icon} onChange={(icon) => setChip(i, { icon })} />
-                        <Input
-                          className={inputCls}
-                          value={chip.title}
-                          placeholder="Title (e.g. 120+)"
-                          onChange={(e) => setChip(i, { title: e.target.value })}
-                        />
-                        <Input
-                          className={inputCls}
-                          value={chip.sub}
-                          placeholder="Subtext"
-                          onChange={(e) => setChip(i, { sub: e.target.value })}
-                        />
-                      </div>
-                      <RemoveButton
-                        onClick={() =>
-                          setContent({ chips: content.chips.filter((_, idx) => idx !== i) })
-                        }
-                      />
-                    </div>
-                  ))}
-                  <AddButton
-                    onClick={() =>
-                      setContent({
-                        chips: [...content.chips, { icon: "Globe", title: "", sub: "" }],
-                      })
-                    }
-                    label="Add chip"
-                  />
-                </div>
-              </Field>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Field label="Form title">
-                  <Input
-                    className={inputCls}
-                    value={content.formTitle}
-                    placeholder="Plan your trip"
-                    onChange={(e) => setContent({ formTitle: e.target.value })}
-                  />
-                </Field>
-                <Field label="Form dropdown label">
-                  <Input
-                    className={inputCls}
-                    value={content.formCountryLabel ?? ""}
-                    placeholder="Preferred Region"
-                    onChange={(e) => setContent({ formCountryLabel: e.target.value })}
-                  />
-                </Field>
-              </div>
-              <Field label="Form subtitle">
-                <textarea
-                  rows={2}
-                  className={textareaCls}
-                  value={content.formSubtitle}
-                  placeholder="Share your details and our expert will call you back…"
-                  onChange={(e) => setContent({ formSubtitle: e.target.value })}
-                />
-              </Field>
-              <Field label="Form dropdown options">
-                <StringListEditor
-                  items={content.formCountries ?? []}
-                  onChange={(formCountries) => setContent({ formCountries })}
-                  placeholder="e.g. Europe"
-                  addLabel="Add option"
-                />
-              </Field>
-              <Field label="Help phone (optional)">
-                <Input
-                  className={inputCls}
-                  value={content.helpPhone ?? ""}
-                  placeholder="+91 98765 43210"
-                  onChange={(e) => setContent({ helpPhone: e.target.value })}
-                />
-              </Field>
             </div>
           </Collapsible.Content>
         </div>
