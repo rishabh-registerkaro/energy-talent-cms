@@ -10,38 +10,10 @@
 // migration — the page is stored as one `content` Json document.
 
 // Icon names exported by Energy Talent/app/components/divisions/icons.tsx
-export const ICON_NAMES = [
-  "ArrowRight",
-  "BadgeCheck",
-  "BarChart",
-  "BedDouble",
-  "Bot",
-  "Briefcase",
-  "Check",
-  "ChevronDown",
-  "ChevronRight",
-  "Compass",
-  "Cpu",
-  "Globe",
-  "GraduationCap",
-  "Headset",
-  "MapPin",
-  "Megaphone",
-  "Network",
-  "Plane",
-  "Plus",
-  "Rocket",
-  "ShieldCheck",
-  "Sparkles",
-  "Target",
-  "Users",
-] as const;
 
-export type IconName = (typeof ICON_NAMES)[number] | (string & {});
+
 
 export type Breadcrumb = { label: string; href?: string };
-
-export type HeroChip = { icon: IconName; title: string; sub: string };
 
 type SectionBase = {
   /** Anchor id used for in-page links / table of contents */
@@ -55,19 +27,18 @@ type SectionBase = {
 export type IntroSection = SectionBase & {
   kind: "intro";
   paragraphs: string[];
-  stats?: { icon: IconName; value: string; label: string }[];
+  stats?: { value: string; label: string }[];
 };
 
 export type CardsSection = SectionBase & {
   kind: "cards";
   intro?: string;
-  cards: { icon: IconName; title: string; points: string[] }[];
+  cards: { title: string; points: string[] }[];
 };
 
 export type ChipsSection = SectionBase & {
   kind: "chips";
   intro?: string;
-  chipIcon: IconName;
   chips: string[];
   note?: string;
 };
@@ -128,19 +99,22 @@ export type SectionKind = Section["kind"];
  * Field-for-field compatible with the frontend `ServiceConfig` (icons as
  * strings). `sections` is an ordered list — add / remove / reorder freely.
  */
+/**
+ * A service page.
+ *
+ * Trimmed to what the site actually renders. The forked project's service
+ * pages carried an enquiry form in the hero (formTitle, formSubtitle,
+ * formCountries, formCountryLabel, helpPhone), a row of icon chips, and an
+ * icon on the badge, every card, every chip group and every stat. This site's
+ * service page has two buttons in the hero and renders no icons at all, so
+ * those fields only gave editors things to fill in that changed nothing.
+ */
 export type ServicePageContent = {
   breadcrumb: Breadcrumb[];
   badge: string;
-  badgeIcon: IconName;
   titleLead: string;
   titleAccent: string;
   subtitle: string;
-  chips: HeroChip[];
-  formTitle: string;
-  formSubtitle: string;
-  formCountries?: string[];
-  formCountryLabel?: string;
-  helpPhone?: string;
   sections: Section[];
 };
 
@@ -164,7 +138,7 @@ export function createSection(kind: SectionKind): Section {
     case "cards":
       return { ...base, kind, intro: "", cards: [] };
     case "chips":
-      return { ...base, kind, intro: "", chipIcon: "MapPin", chips: [], note: "" };
+      return { ...base, kind, intro: "", chips: [], note: "" };
     case "steps":
       return { ...base, kind, intro: "", steps: [] };
     case "checklist":
@@ -182,16 +156,9 @@ export function emptyServicePageContent(): ServicePageContent {
   return {
     breadcrumb: [{ label: "Home", href: "/" }, { label: "" }],
     badge: "",
-    badgeIcon: "Globe",
     titleLead: "",
     titleAccent: "",
     subtitle: "",
-    chips: [],
-    formTitle: "Enquire now",
-    formSubtitle: "",
-    formCountries: [],
-    formCountryLabel: "",
-    helpPhone: "",
     sections: [],
   };
 }
