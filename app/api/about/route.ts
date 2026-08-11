@@ -6,6 +6,7 @@ import { Prisma } from "@prisma/client";
 import { requireRole } from "@/app/lib/utils/authorization";
 import { CONTENT_ROLES } from "@/app/lib/constants/role";
 import { revalidateFrontendTags } from "@/app/lib/utils/revalidateFrontend";
+import { withAboutDefaults } from "@/app/lib/content/about-content";
 
 // CORS headers helper
 const getCorsHeaders = (origin: string | null) => {
@@ -82,10 +83,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Normalise before storing: a payload missing a section would otherwise be
+    // written verbatim and silently drop that section's saved copy.
     const data = {
       metaTitle: metaTitle ?? undefined,
       metaDescription: metaDescription ?? undefined,
-      content: content as Prisma.InputJsonValue,
+      content: withAboutDefaults(content) as unknown as Prisma.InputJsonValue,
     };
 
     const existing = await prisma.aboutPage.findFirst();
