@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Download, Eye, RefreshCw } from "lucide-react";
+import { Download, Eye, RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,6 +74,39 @@ export default function ResumeLeadsPage() {
     fetchLeads(page);
   }, [page, fetchLeads]);
 
+  /** Matches the confirm-then-delete flow on the main Leads screen. */
+  const handleDelete = (leadId: string) => {
+    toast.warning("Are you sure you want to delete this lead?", {
+      description: "This action cannot be undone.",
+      duration: 6000,
+      closeButton: true,
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          const loadingToastId = toast.loading("Deleting lead...");
+          try {
+            const res = await fetch(`/api/lead/${leadId}`, { method: "DELETE" });
+            toast.dismiss(loadingToastId);
+            if (res.ok) {
+              toast.success("Lead deleted");
+              // Deleting the last row of a page would otherwise leave an empty
+              // table on a page that no longer exists.
+              const isLastOnPage = leads.length === 1 && page > 1;
+              if (isLastOnPage) setPage((p) => p - 1);
+              else fetchLeads(page);
+            } else {
+              const data = await res.json().catch(() => null);
+              toast.error(data?.message || "Failed to delete lead");
+            }
+          } catch {
+            toast.dismiss(loadingToastId);
+            toast.error("Failed to delete lead");
+          }
+        },
+      },
+    });
+  };
+
   // Search is client-side over the current page: the leads API has no text
   // search, and adding one is a bigger change than this screen needs.
   const visible = search.trim()
@@ -140,7 +173,7 @@ export default function ResumeLeadsPage() {
                 <TableHead className="whitespace-nowrap text-slate-300">CV</TableHead>
                 <TableHead className="whitespace-nowrap text-slate-300">Created</TableHead>
                 <TableHead className="whitespace-nowrap text-center text-slate-300">
-                  View
+                  Actions
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -202,16 +235,29 @@ export default function ResumeLeadsPage() {
                     <TableCell className="whitespace-nowrap text-sm text-slate-400">
                       {formatDate(lead.createdAt)}
                     </TableCell>
-                    <TableCell className="text-center">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setViewLead(lead)}
-                        className="text-slate-300 hover:text-white"
-                      >
-                        <Eye size={16} />
-                      </Button>
+                    <TableCell>
+                      <div className="flex items-center justify-center gap-1">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          aria-label={`View ${lead.name}`}
+                          onClick={() => setViewLead(lead)}
+                          className="text-slate-300 hover:text-white"
+                        >
+                          <Eye size={16} />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          aria-label={`Delete ${lead.name}`}
+                          onClick={() => handleDelete(lead._id)}
+                          className="text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
