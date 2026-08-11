@@ -180,6 +180,11 @@ const navigationItems = [
         icon: Database,
       },
       {
+        title: "Resume Builder Leads",
+        url: "/dashboard/resume-leads",
+        icon: Database,
+      },
+      {
         title: "Users",
         url: "/dashboard/users",
         icon: Users,

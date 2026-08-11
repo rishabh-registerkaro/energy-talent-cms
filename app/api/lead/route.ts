@@ -180,7 +180,15 @@ export async function GET(req: NextRequest) {
     const LEAD_STATUSES = ["new", "contacted", "converted", "lost"];
     const noMatch = status !== null && !LEAD_STATUSES.includes(status);
 
+    // Optional source filter, used by the Resume Builder leads screen. A
+    // prefix match on leadSource, because every resume lead is tagged
+    // "Resume Builder — <which CTA>" and the screen wants all of them.
+    const source = searchParams.get("source");
+
     const query: any = {};
+    if (source) {
+      query.leadSource = { startsWith: source };
+    }
     if (status) {
       query.status = status;
     }
