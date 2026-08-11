@@ -104,6 +104,11 @@ const navigationItems = [
         ],
       },
       {
+        title: "Industry Sectors",
+        url: "/dashboard/industries",
+        icon: Briefcase,
+      },
+      {
         title: "Careers",
         url: "/dashboard/careers",
         icon: BriefcaseBusiness,
