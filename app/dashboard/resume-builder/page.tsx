@@ -101,8 +101,9 @@ export default function ResumeBuilderPage() {
           <div className="mt-4 border border-[var(--et-orange)]/35 bg-[var(--et-orange-soft)] px-4 py-3">
             <p className="text-sm leading-relaxed text-[var(--et-ink-2)]">
               <strong className="font-semibold text-[var(--et-orange-strong)]">Editing the plans:</strong> the{" "}
-              <code className="bg-white px-1 py-0.5 text-[13px] text-[var(--et-ink)]">pricing</code> table holds one row per billing period —
-              period, then each plan&rsquo;s price and its small print. The two{" "}
+              <code className="bg-white px-1 py-0.5 text-[13px] text-[var(--et-ink)]">pricing</code> table holds one row per experience
+              level — the level name, then each plan&rsquo;s price and its small
+              print. The two{" "}
               <code className="bg-white px-1 py-0.5 text-[13px] text-[var(--et-ink)]">pricing-…-features</code> lists are the ticks under each
               plan. Change the wording freely, but keep each section&rsquo;s{" "}
               <strong className="font-semibold text-[var(--et-orange-strong)]">id</strong> as it is, or that
